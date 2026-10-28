@@ -1,0 +1,106 @@
+---
+import Base from "../../layouts/Base.astro";
+import Showcase from "../../components/Showcase.astro";
+import Icon from "../../components/Icon.astro";
+import { snapshot } from "../../lib/content.mjs";
+import { settings, withBase } from "../../../website.config.mjs";
+---
+
+<Base
+  title="演示"
+  description="真实查看 Nekomi 的 Default、Fresh、Minimal 预设，切换桌面、手机和明暗截图。"
+>
+  <div class="wrap">
+    <header class="page-heading">
+      <span class="eyebrow">NEKOMI / 实际模样</span>
+      <h1>选一种，你喜欢的模样。</h1>
+      <p>同一套布局，三种不同的气质。切换预设、设备和明暗，看看实际效果。</p>
+      {settings.demoUrl ? (
+        <a
+          class="button filled"
+          href={settings.demoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          打开在线 Demo <Icon name="external" />
+        </a>
+      ) : (
+        <p class="subtle-note">目前提供真实截图展示，在线 Demo 尚未配置。</p>
+      )}
+    </header>
+    <Showcase />
+    <div class="preset-descriptions">
+      <article>
+        <i class="preset-dot purple"></i>
+        <h2>Default</h2>
+        <p>柔和的 Nekomi 紫色与原有形状，保留轻松的个人站气质。</p>
+      </article>
+      <article>
+        <i class="preset-dot green"></i>
+        <h2>Fresh</h2>
+        <p>柔和青绿与辅助色，配合相同的内容结构，让页面更清新。</p>
+      </article>
+      <article>
+        <i class="preset-dot neutral"></i>
+        <h2>Minimal</h2>
+        <p>降低首篇染色，收敛形状与标题字体，让文字更靠前。</p>
+      </article>
+    </div>
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">不止首页</span>
+          <h2>走进一篇文章。</h2>
+        </div>
+        <a class="text-link" href={withBase("docs/markdown/")}>
+          阅读功能说明 <Icon name="arrow" />
+        </a>
+      </div>
+      <div class="screenshot-gallery">
+        {[
+          ["reader", "文章阅读"],
+          ["callouts", "语义提示块"],
+          ["tabs", "内容 Tabs 与代码"],
+          ["math", "KaTeX 数学公式"],
+          ["diagrams", "Mermaid 图表"],
+        ].map(([name, title]) => (
+          <figure>
+            <a
+              href={withBase(`screenshots/p31-${name}-light-1440.png`)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={withBase(`screenshots/p31-${name}-light-1440.png`)}
+                alt={`Nekomi ${title}真实截图`}
+                width="1440"
+                height="900"
+                loading="lazy"
+              />
+            </a>
+            <figcaption>
+              {title}
+              <span>点击查看原图 ↗</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+    <p class="source-note">
+      截图来自主题仓库{" "}
+      <a
+        href={`${snapshot.repository}/blob/${snapshot.commit}/screenshots/P30.md`}
+      >
+        P3.0
+      </a>{" "}
+      /{" "}
+      <a
+        href={`${snapshot.repository}/blob/${snapshot.commit}/screenshots/P31.md`}
+      >
+        P3.1
+      </a>
+      ；为当时生产构建的真实记录，不模拟在线博客。主题提交：
+      {snapshot.commit.slice(0, 7)}。
+    </p>
+  </div>
+</Base>

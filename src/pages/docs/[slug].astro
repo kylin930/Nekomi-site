@@ -1,0 +1,146 @@
+---
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import {
+  docs,
+  snapshot,
+  renderSource,
+  sourceLink,
+} from "../../lib/content.mjs";
+import { withBase } from "../../../website.config.mjs";
+export function getStaticPaths() {
+  return docs.map((doc, index) => ({
+    params: { slug: doc.slug },
+    props: { doc, index },
+  }));
+}
+const { doc, index } = Astro.props;
+const { html, headings } = await renderSource(doc.source);
+const groups = [...new Set(docs.map((d) => d.group))];
+---
+
+<Base title={doc.title} description={doc.description}>
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="文档导航">
+      <details class="docs-nav-details" open>
+        <summary>
+          文档导航 <span>⌄</span>
+        </summary>
+        <nav>
+          {groups.map((group) => (
+            <div class="doc-nav-group">
+              <p>{group}</p>
+              {docs
+                .filter((d) => d.group === group)
+                .map((d) => (
+                  <a
+                    href={withBase(`docs/${d.slug}/`)}
+                    aria-current={d.slug === doc.slug ? "page" : undefined}
+                  >
+                    {d.title}
+                  </a>
+                ))}
+            </div>
+          ))}
+          <a class="doc-faq-link" href={withBase("faq/")}>
+            常见问题 ↗
+          </a>
+        </nav>
+      </details>
+    </aside>
+    <article class="doc-article">
+      <header class="doc-header">
+        <nav class="breadcrumb" aria-label="面包屑">
+          <a href={withBase("docs/")}>文档</a>
+          <span>/</span>
+          <span>{doc.group}</span>
+        </nav>
+        <h1>{doc.title}</h1>
+        <p>{doc.description}</p>
+        <div class="doc-source">
+          主题代码 {snapshot.version} <span>·</span>
+          <a
+            href={sourceLink(doc.source)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            上游原文 <Icon name="external" size={14} />
+          </a>
+          <span>·</span>
+          <code>{snapshot.commit.slice(0, 7)}</code>
+        </div>
+      </header>
+      {doc.slug === "images" && (
+        <p class="callout">
+          自托管 WOFF2 与字体栈配置请见
+          <a href={withBase("docs/personalization/#本地网页字体")}>
+            本地网页字体
+          </a>
+          。
+        </p>
+      )}
+      {doc.slug === "sidebar" && (
+        <p class="callout">
+          普通顶部链接和模块名称见
+          <a href={withBase("docs/configuration-guide/#顶部导航链接")}>
+            导航配置
+          </a>
+          ；本页解释 Tabs 与常驻模块。
+        </p>
+      )}
+      {headings.length > 0 && (
+        <details class="mobile-toc">
+          <summary>本页目录</summary>
+          <nav>
+            {headings
+              .filter((h: any) => h.depth === 2)
+              .map((h: any) => (
+                <a href={"#" + h.slug}>{h.text}</a>
+              ))}
+          </nav>
+        </details>
+      )}
+      <div class="prose" set:html={html} />
+      <div class="doc-end">
+        <p>
+          内容有疑问？
+          <a href={sourceLink(doc.source)}>前往上游查看或改进文档 ↗</a>
+        </p>
+        <span>同步提交 {snapshot.commit.slice(0, 7)}</span>
+      </div>
+      <nav class="doc-pagination" aria-label="文档上一篇和下一篇">
+        {index > 0 ? (
+          <a href={withBase(`docs/${docs[index - 1].slug}/`)}>
+            <span>← 上一篇</span>
+            <strong>{docs[index - 1].title}</strong>
+          </a>
+        ) : (
+          <span />
+        )}
+        {index < docs.length - 1 && (
+          <a href={withBase(`docs/${docs[index + 1].slug}/`)}>
+            <span>下一篇 →</span>
+            <strong>{docs[index + 1].title}</strong>
+          </a>
+        )}
+      </nav>
+    </article>
+    {headings.length > 0 && (
+      <aside class="docs-toc" aria-label="本页目录">
+        <p>本页目录</p>
+        <nav>
+          {headings
+            .filter((h: any) => h.depth === 2 || h.depth === 3)
+            .map((h: any) => (
+              <a
+                href={"#" + h.slug}
+                class:list={[{ "toc-sub": h.depth === 3 }]}
+              >
+                {h.text}
+              </a>
+            ))}
+        </nav>
+      </aside>
+    )}
+  </div>
+</Base>

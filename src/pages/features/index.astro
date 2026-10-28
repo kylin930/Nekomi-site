@@ -1,0 +1,175 @@
+---
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import { withBase } from "../../../website.config.mjs";
+const sections = [
+  {
+    n: "01",
+    title: "让个人站，有自己的样子。",
+    intro:
+      "Material Design 3 配色体系，Default、Fresh、Minimal 三种预设。既能直接开始，也留有慢慢调整的余地。",
+    items: [
+      [
+        "明暗与配色",
+        "浅色、深色和跟随系统。自定义六位 HEX 主色，由 MDUI 生成明暗语义色板。",
+      ],
+      [
+        "壁纸与装饰",
+        "可选桌面 / 移动壁纸与角色装饰，默认关闭。素材由站长自行提供，空间不足时装饰会退让。",
+      ],
+      [
+        "字体与形状",
+        "正文、标题、品牌分别设置字体栈，可选自托管 WOFF2；卡片圆角、阅读宽度都有安全范围。",
+      ],
+    ],
+    doc: "personalization",
+    image: "p30-fresh-home-light-1440.png",
+  },
+  {
+    n: "02",
+    title: "把注意力，交还给内容。",
+    intro:
+      "普通 Markdown 就是写作入口，不需要 MDX。静态生成正文，扩展按内容与交互加载。",
+    items: [
+      [
+        "代码、公式与图表",
+        "Shiki 双主题代码高亮；构建时 KaTeX；接近视口才加载 Mermaid。",
+      ],
+      [
+        "丰富而克制的表达",
+        "提示块、原生折叠、图片组、链接卡片、点击加载视频和 MDUI 内容 Tabs。",
+      ],
+      [
+        "舒适阅读",
+        "多级目录与锚点、代码复制、图片灯箱、阅读时间、相关文章和相邻文章导航。",
+      ],
+    ],
+    doc: "markdown",
+    image: "p31-tabs-light-1440.png",
+  },
+  {
+    n: "03",
+    title: "每篇记录，都找得到。",
+    intro:
+      "列表与内容都拥有真实静态地址。用分类、标签、月份归档组织文章，也可以添加关于与项目页面。",
+    items: [
+      [
+        "全量文章搜索",
+        "搜索全部公开文章的标题、摘要、分类和标签元数据；不把它宣传为全文正文搜索。",
+      ],
+      [
+        "静态分页与连续阅读",
+        "分页可以在无 JavaScript 时访问，也能选择无限滚动。返回列表会恢复筛选、已加载批次和位置。",
+      ],
+      [
+        "独立页面与灵活侧栏",
+        "Markdown 独立页面可进入首页真实内容 Tab；侧栏模块可设为常驻或切换显示。",
+      ],
+    ],
+    doc: "pages",
+    image: null,
+  },
+  {
+    n: "04",
+    title: "交互自然，扩展有边界。",
+    intro:
+      "主题使用 Astro ClientRouter 与原生 MDUI 控件。功能为博客服务，外部服务由你决定。",
+    items: [
+      [
+        "页面导航",
+        "无刷新导航、文章标题 / 封面共享过渡、目录滚动与返回顶部；支持减少动态效果。",
+      ],
+      [
+        "四种评论服务",
+        "Waline、Twikoo、Artalk、Giscus 适配，默认关闭。Giscus 没有全站最近评论 API；其他查询也取决于后端权限。",
+      ],
+      [
+        "自定义脚本",
+        "支持全站 / 按页面 JS、挂载与清理生命周期及可选 SRI。不是脚本沙箱，不应放入私钥。",
+      ],
+    ],
+    doc: "comments",
+    image: null,
+  },
+  {
+    n: "05",
+    title: "构建一次，静态发布。",
+    intro:
+      "开发时使用 Node.js，发布时只需托管 dist/。博客不需要常驻 Node.js 后端。",
+    items: [
+      [
+        "元数据与订阅",
+        "Canonical、Open Graph、JSON-LD、RSS、Sitemap 与 robots。示例内容默认不被索引。",
+      ],
+      [
+        "根域和子路径",
+        "支持 GitHub Pages、Cloudflare Pages 等静态托管。域名和 base 分开配置，资源路径统一处理。",
+      ],
+      [
+        "配置有依据",
+        "配置 Schema、类型和完整参考同源；构建时检查未知字段、依赖和范围。",
+      ],
+    ],
+    doc: "publishing",
+    image: null,
+  },
+];
+---
+
+<Base
+  title="特性"
+  description="了解 Nekomi 已实现的外观、Markdown 阅读、文章组织、导航、评论和静态部署能力。"
+>
+  <div class="wrap">
+    <header class="page-heading">
+      <span class="eyebrow">NEKOMI / 特性</span>
+      <h1>写作简单，阅读自在。</h1>
+      <p>
+        从一篇 Markdown
+        到一个完整的个人博客。常用能力已经备好，额外的选择留给你。
+      </p>
+    </header>
+    {sections.map((s) => (
+      <section class="feature-section">
+        <div class="feature-section-heading">
+          <span class="eyebrow">
+            {s.n} / {["外观", "阅读", "内容", "交互", "发布"][Number(s.n) - 1]}
+          </span>
+          <h2>{s.title}</h2>
+          <p>{s.intro}</p>
+          <a class="text-link" href={withBase(`docs/${s.doc}/`)}>
+            阅读相关文档 <Icon name="arrow" />
+          </a>
+        </div>
+        <div class="feature-details">
+          {s.image && (
+            <a href={withBase("demo/")}>
+              <img
+                src={withBase("screenshots/" + s.image)}
+                alt={s.title + " · 真实主题截图"}
+                width="1440"
+                height="900"
+                loading="lazy"
+              />
+            </a>
+          )}
+          {s.items.map(([title, text]) => (
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+    <section class="start-banner">
+      <div>
+        <h2>先运行起来，再慢慢探索。</h2>
+        <p>从快速开始进入你的第一个 Nekomi 博客。</p>
+      </div>
+      <a class="button filled" href={withBase("docs/getting-started/")}>
+        开始使用 <Icon name="arrow" />
+      </a>
+    </section>
+  </div>
+</Base>

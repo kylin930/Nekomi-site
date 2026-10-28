@@ -1,0 +1,50 @@
+---
+import Base from "../../layouts/Base.astro";
+import { snapshot, renderSource, sourceLink } from "../../lib/content.mjs";
+import { settings } from "../../../website.config.mjs";
+const { html } = await renderSource("CHANGELOG.md");
+const official = (
+  snapshot.releases as { prerelease: boolean; tag: string }[]
+).filter((r) => !r.prerelease);
+---
+
+<Base
+  title="更新日志"
+  description="来自 Nekomi 主题仓库的真实变更记录，区分代码版本、Git Tag 与正式 GitHub Release。"
+>
+  <div class="wrap narrow">
+    <header class="page-heading">
+      <span class="eyebrow">NEKOMI / 更新日志</span>
+      <h1>一点点，变得更顺手。</h1>
+      <p>这里记录主题的真实变化，内容直接来自上游 CHANGELOG。</p>
+    </header>
+    <div class="release-status">
+      <div>
+        <span>源码 package.json</span>
+        <strong>{snapshot.version}</strong>
+      </div>
+      <div>
+        <span>Git Tag</span>
+        <strong>
+          {snapshot.tags.length ? snapshot.tags.join("、") : "尚无 Tag"}
+        </strong>
+      </div>
+      <div>
+        <span>正式 GitHub Release</span>
+        <strong>{official.length ? official[0].tag : "尚未发布"}</strong>
+      </div>
+    </div>
+    <p class="source-note">
+      查询时间 {snapshot.checkedAt.slice(0, 10)} · 提交{" "}
+      <a href={`${settings.github}/commit/${snapshot.commit}`}>
+        {snapshot.commit.slice(0, 7)}
+      </a>
+      。代码中的版本号不等于已发布的 Release。
+      <a href={`${settings.github}/releases`}>查看 GitHub 实时状态 ↗</a>
+    </p>
+    <div class="prose changelog-prose" set:html={html} />
+    <p class="source-note">
+      <a href={sourceLink("CHANGELOG.md")}>上游 CHANGELOG 原文 ↗</a>
+    </p>
+  </div>
+</Base>

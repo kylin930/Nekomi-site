@@ -1,0 +1,79 @@
+---
+import { withBase } from "../../website.config.mjs";
+import Icon from "./Icon.astro";
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<section
+  class:list={["showcase", { compact }]}
+  data-showcase
+  data-base={withBase("screenshots/")}
+  aria-label="真实主题截图展示"
+>
+  <div class="showcase-toolbar">
+    <div class="preset-control" role="group" aria-label="外观预设">
+      {[
+        ["default", "Default"],
+        ["fresh", "Fresh"],
+        ["minimal", "Minimal"],
+      ].map(([v, l]) => (
+        <button data-preset={v} aria-pressed={v === "default"}>
+          <i class={v}></i>
+          {l}
+        </button>
+      ))}
+    </div>
+    <div class="preview-controls">
+      <button
+        class="icon-button"
+        data-shot-mode
+        aria-label="切换为深色截图"
+        aria-pressed="false"
+      >
+        <Icon name="moon" />
+      </button>
+      <button
+        class="icon-button"
+        data-shot-device
+        aria-label="切换为手机截图"
+        aria-pressed="false"
+      >
+        <Icon name="mobile" />
+      </button>
+    </div>
+  </div>
+  <figure class="shot-figure">
+    <div class="browser-frame">
+      <div class="browser-bar" aria-hidden="true">
+        <span>● ● ●</span>
+        <span>Nekomi · 主题预览</span>
+        <span>↗</span>
+      </div>
+      <a
+        data-shot-full
+        href={withBase("screenshots/p30-default-home-light-1440.png")}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="打开当前真实截图原图"
+      >
+        <img
+          data-shot
+          src={withBase("screenshots/p30-default-home-light-1440.png")}
+          alt="Default 预设 · 浅色 · 桌面首页真实截图"
+          width="1440"
+          height="900"
+          loading={compact ? "lazy" : "eager"}
+          fetchpriority={compact ? "auto" : "high"}
+        />
+      </a>
+    </div>
+    <figcaption>
+      <span data-shot-caption>Default · 浅色 · 桌面</span>
+      <span>来自主题仓库的真实截图 · 点击查看原图</span>
+    </figcaption>
+  </figure>
+  <p class="sr-only" role="status" data-shot-status></p>
+</section>

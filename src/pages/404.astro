@@ -1,0 +1,20 @@
+---
+import Base from "../layouts/Base.astro";
+import { withBase } from "../../website.config.mjs";
+---
+
+<Base title="页面未找到" noindex>
+  <div class="wrap page-heading error-page">
+    <span class="eyebrow">404 / 路过一处空白</span>
+    <h1>这一页，还没有故事。</h1>
+    <p>链接可能已更改。回到首页，或在文档里找找。</p>
+    <div class="actions">
+      <a class="button filled" href={withBase()}>
+        返回首页
+      </a>
+      <a class="button tonal" href={withBase("docs/")}>
+        浏览文档
+      </a>
+    </div>
+  </div>
+</Base>

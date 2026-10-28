@@ -1,0 +1,64 @@
+---
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import { docs, snapshot } from "../../lib/content.mjs";
+import { withBase } from "../../../website.config.mjs";
+---
+
+<Base
+  title="文档"
+  description="Nekomi 文档中心：从安装、外观与 Markdown，到评论、扩展和静态部署。"
+>
+  <div class="wrap docs-home">
+    <header class="page-heading">
+      <span class="eyebrow">NEKOMI / 文档</span>
+      <h1>从这里，认识 Nekomi。</h1>
+      <p>先让博客运行起来，再一点点调整成喜欢的模样。</p>
+      <button class="search-entry" data-open-search>
+        <Icon name="search" />
+        <span>搜索配置、功能与使用方法…</span>
+        <kbd>Ctrl / ⌘ K</kbd>
+      </button>
+    </header>
+    <a class="docs-start" href={withBase("docs/getting-started/")}>
+      <span class="round-icon">
+        <Icon name="book" size={28} />
+      </span>
+      <div>
+        <span class="eyebrow">第一次使用？</span>
+        <h2>几步，搭建你的第一个博客。</h2>
+        <p>Node.js 24 LTS · npm · Markdown</p>
+      </div>
+      <Icon name="arrow" size={30} />
+    </a>
+    <div class="docs-groups">
+      {[...new Set(docs.map((d) => d.group))].map((group, i) => (
+        <section>
+          <h2>
+            <span>0{i + 1}</span>
+            {group}
+          </h2>
+          {docs
+            .filter((d) => d.group === group)
+            .map((d) => (
+              <a class="doc-entry" href={withBase(`docs/${d.slug}/`)}>
+                <div>
+                  <h3>{d.title}</h3>
+                  <p>{d.description}</p>
+                </div>
+                <Icon name="arrow" size={18} />
+              </a>
+            ))}
+        </section>
+      ))}
+    </div>
+    <aside class="source-note">
+      文档同步自 Nekomi <code>{snapshot.ref}</code> ·{" "}
+      <a href={`${snapshot.repository}/commit/${snapshot.commit}`}>
+        {snapshot.commit.slice(0, 7)}
+      </a>
+      ，完整参考保留上游原文。
+      <a href={withBase("faq/")}>也可以先读常见问题 →</a>
+    </aside>
+  </div>
+</Base>

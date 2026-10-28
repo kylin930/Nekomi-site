@@ -1,0 +1,207 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import Showcase from "../components/Showcase.astro";
+import { settings, withBase } from "../../website.config.mjs";
+import { snapshot } from "../lib/content.mjs";
+---
+
+<Base>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-title">
+        <a class="eyebrow version-pill" href={withBase("changelog/")}>
+          <span class="status-dot"></span> 开源博客主题{" "}
+          <span class="muted">/ 代码 {snapshot.version}</span>
+          <Icon name="arrow" size={16} />
+        </a>
+        <h1>
+          Nekomi
+          <span class="hero-flower">
+            <Icon name="flower" size={55} />
+          </span>
+        </h1>
+        <h2>
+          为文字留一处
+          <br />
+          <em>舒适的空间。</em>
+        </h2>
+      </div>
+      <div class="hero-intro">
+        <span class="mini-label">你的故事，自有模样。</span>
+        <p>
+          用 Markdown 记录日常与灵感。
+          <br />
+          一个基于 Astro 与 Material Design 3
+          的静态博客主题，让写作简单，让阅读自在。
+        </p>
+        <div class="actions">
+          <a class="button filled" href={withBase("docs/getting-started/")}>
+            开始使用
+            <Icon name="arrow" />
+          </a>
+          <a class="button tonal" href={withBase("demo/")}>
+            查看演示
+            <Icon name="external" />
+          </a>
+          <a
+            class="text-link"
+            href={settings.github}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub <Icon name="github" size={18} />
+          </a>
+        </div>
+        <p class="hero-footnote">
+          纯静态构建 <span>·</span> MIT 开源 <span>·</span> 无需常驻后端
+        </p>
+      </div>
+    </section>
+    <Showcase />
+    <div class="tech-strip">
+      <span>少一点负担，多一点表达。</span>
+      <div>
+        <b>Astro</b>
+        <span>静态生成</span>
+        <b>MDUI 2</b>
+        <span>原生组件</span>
+        <b>Markdown</b>
+        <span>专注写作</span>
+      </div>
+    </div>
+    <section class="section reading-section">
+      <div class="section-copy">
+        <span class="eyebrow">01 / 阅读，是主角</span>
+        <h2>
+          长文、代码，
+          <br />
+          都能好好安放。
+        </h2>
+        <p>
+          舒适的中文行距，清楚的标题层级。公式、图表与图片都有自己的位置，让内容自然展开。
+        </p>
+        <ul class="check-list">
+          <li>
+            <Icon name="check" />
+            Shiki 双主题代码高亮与复制
+          </li>
+          <li>
+            <Icon name="check" />
+            KaTeX 公式、按需 Mermaid 与图片灯箱
+          </li>
+          <li>
+            <Icon name="check" />
+            文章目录、阅读时间与相关文章
+          </li>
+        </ul>
+        <a class="text-link" href={withBase("docs/markdown/")}>
+          看看 Markdown 能写些什么 <Icon name="arrow" />
+        </a>
+      </div>
+      <figure class="reader-show">
+        <div class="paper-label">
+          <Icon name="book" /> 实际阅读页面
+        </div>
+        <img
+          src={withBase("screenshots/p31-reader-light-1440.png")}
+          alt="Nekomi Markdown 扩展示例文章的真实桌面截图"
+          width="1440"
+          height="900"
+          loading="lazy"
+        />
+        <figcaption>Markdown 正文 · 默认浅色</figcaption>
+      </figure>
+    </section>
+    <section class="section personality">
+      <div class="personality-heading">
+        <span class="eyebrow">02 / 留一点自己的颜色</span>
+        <h2>
+          是 Nekomi，
+          <br />
+          也是你的个人站。
+        </h2>
+        <p>
+          三种预设只是起点。配色、壁纸、字体、导航与侧栏，都可以从同一份配置里慢慢调整。
+        </p>
+        <a class="text-link" href={withBase("docs/configuration-guide/")}>
+          认识站点配置 <Icon name="arrow" />
+        </a>
+      </div>
+      <div class="config-sample">
+        <div class="code-title">
+          <span>site.config.json</span>
+          <span>JSON</span>
+        </div>
+        <pre><code><span class="muted">{`{`}</span>
+  "appearance": {`{`}
+    "preset": "fresh",
+    "color": "#427f79",
+    "mode": "auto"
+  {`}`}
+<span class="muted">{`}`}</span></code></pre>
+        <div class="swatches">
+          <span class="swatch purple"></span>
+          <span class="swatch green"></span>
+          <span class="swatch pink"></span>
+          <span class="swatch blue"></span>
+          <p>
+            主色交给你，
+            <br />
+            明暗色板交给 MDUI。
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="section quiet-features">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">03 / 简洁，也很周全</span>
+          <h2>日常写博客，需要的都在。</h2>
+        </div>
+        <a class="text-link" href={withBase("features/")}>
+          查看全部特性 <Icon name="arrow" />
+        </a>
+      </div>
+      <div class="feature-rows">
+        {[
+          [
+            "01",
+            "顺手找到每一篇",
+            "分类、标签、归档和全量文章元数据搜索。静态分页可直接访问，也可按需开启无限滚动。",
+            "publishing",
+          ],
+          [
+            "02",
+            "空间随内容而变",
+            "独立 Markdown 页面、可配置导航与常驻侧栏模块。关于、项目和友链，各有合适的位置。",
+            "pages",
+          ],
+          [
+            "03",
+            "连接读者，保留选择",
+            "按需接入 Waline、Twikoo、Artalk 或 Giscus。评论默认关闭，博客本身始终保持静态。",
+            "comments",
+          ],
+        ].map(([n, title, text, doc]) => (
+          <a class="feature-row" href={withBase(`docs/${doc}/`)}>
+            <span class="row-number">{n}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+            <Icon name="arrow" />
+          </a>
+        ))}
+      </div>
+    </section>
+    <section class="start-banner">
+      <div>
+        <span class="eyebrow">从第一篇文字开始</span>
+        <h2>把这里，变成你的小小角落。</h2>
+        <p>准备好 Node.js，克隆主题，写下你的第一篇 Markdown。</p>
+      </div>
+      <a class="button filled" href={withBase("docs/getting-started/")}>
+        搭建我的博客 <Icon name="arrow" />
+      </a>
+    </section>
+  </div>
+</Base>
