@@ -99,10 +99,21 @@ NEKOMI_SOURCE=/path/to/Nekomi npm run sync:docs
 - `colors.astro` / `color-preview.ts`：同源 iframe 内的独立 MDUI 博客配色示意。
 - `quick-start.mjs`：上游 README 的 AST 章节选择，配置参考仍完全来自上游。
 - `content.mjs`：构建期 Markdown 渲染、同源标题锚点、相对链接转换。
-- `site.ts`：三种主题模式、本地记忆、搜索 / 失败重试 / 键盘选择、复制与移动菜单。
+- `site.ts`：三种主题模式、本地记忆、搜索 / 失败重试 / 键盘选择与代码复制。
+- `ui.ts` / `showcase.ts`：按需注册 MDUI、Drawer / Dialog / FAB 焦点与历史、截图解码及过期动画取消。
 - `global.css`：MD3 语义色、响应式排版、深色、焦点和减少动态支持。
 
-使用原生多页面导航保留浏览器前进 / 后退和滚动恢复，支持浏览器跨文档 View Transitions；未引入客户端路由框架。搜索与截图切换需要 JS，正文、文档导航、FAQ、开始使用链接在关闭 JS 后仍可用。不侵入 MDUI Shadow DOM。默认没有统计、外部字体或第三方 SDK 请求。
+使用原生多页面导航保留浏览器前进 / 后退和滚动恢复，页面初次绘制使用轻量 CSS Effects 过渡；未引入客户端路由框架。搜索与截图切换需要 JS，正文、文档导航、FAQ、开始使用链接在关闭 JS 后仍可用。不侵入 MDUI Shadow DOM。默认没有统计、外部字体或第三方 SDK 请求。
+
+## MD3 Expressive 精修
+
+CTA、图标操作、预设按钮、配色操作、搜索 Dialog、移动 Navigation Drawer 与 small FAB 使用 MDUI 2.1.5 的按需组件。预设组采用公开 Button 的 tonal / outlined 状态；该版本 Segmented Group 隐藏验证字段没有公开命名接口，单项 selected 又是受保护属性，因此没有强行迁移。保留真实链接、原生 details、select、HEX / color 输入和 checkbox。迁移取舍及原始颜色清单见 [MD3E 审计](docs/MD3E-AUDIT.md)。
+
+`global.css` 的语义别名指向公开 `--mdui-color-*`。`brand-palette.css` 是 MDUI `setColorScheme("#8064b1")` 的原始公开颜色输出，与生成的类名一起静态载入；脚本只切换主题偏好，不再维护或注入第二套官网色板。这样首次绘制和无 JS 时也有正确的浅 / 深颜色。升级 MDUI 或修改 `src/lib/design.mjs` 的品牌主色后，先构建并启动静态服务，再运行 `python scripts/capture-brand-palette.py http://127.0.0.1:4321/`，检查差异后重新构建。常规构建不需要 Python 或浏览器。
+
+`motion-tokens.css` 集中管理 Spatial 350 / 500ms 与 Effects 120 / 200ms；MDUI 使用公开时长 / 缓动变量，截图和 FAB 使用可取消的 Web Animations。截图解码完成后才替换，固定舞台承接尺寸过渡，旧图淡出独立于尺寸动画结束；失败可重试。首页只有一次轻微进入，FAQ 使用浏览器支持时的原生 details 动画，文档正文没有滚动进入或视差。
+
+减少动态时取消自定义位移 / 缩放 / 淡入、FAQ 高度动画与页面进入动画，MDUI 公共时长收缩到 1ms，保留即时状态、焦点和导航。实验室仍在独立 iframe 中生成色板，复用同一组 Effects Token，不重建预览节点。
 
 ## 自定义配色实现
 
@@ -131,6 +142,9 @@ BROWSER_PATH=/usr/bin/chromium python3 tests/browser.py http://127.0.0.1:4321/
 # 主题 checkout 需要先按其锁文件安装依赖
 NEKOMI_SOURCE=/path/to/Nekomi node scripts/build-palette-oracle.mjs
 python3 tests/palette-browser.py http://127.0.0.1:4321/
+# MDUI、焦点、遮罩、快速切换 / 失败重试、减少动态、无 JS / 静态色板
+# 可选 AXE_PATH=/path/to/axe.min.js 追加打开弹窗 / 抽屉 / 实验室的检查
+python3 tests/md3e-browser.py http://127.0.0.1:4321/
 ```
 
 它比较 12 个主要色板角色，并让参考程序通过主题真实的 resolveConfig 校验输出；另检查辅助色关闭、无效 HEX、复制、模式隔离、同一 DOM、单份色板样式、触控 / 键盘、尺寸、文档入口与真实截图。结果在 `test-results/round2/`。

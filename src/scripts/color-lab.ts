@@ -1,3 +1,4 @@
+import type { Button } from "mdui/components/button.js";
 import {
   defaultPalette,
   isHex,
@@ -18,7 +19,7 @@ if (lab) {
     secondaryPicker = get<HTMLInputElement>("#lab-secondary-picker");
   const useSecondary = get<HTMLInputElement>("#lab-use-secondary"),
     mode = get<HTMLSelectElement>("#lab-mode");
-  const copy = get<HTMLButtonElement>("[data-copy-palette]"),
+  const copy = get<Button>("[data-copy-palette]"),
     validation = get("#lab-validation");
   let ready = false;
   let valid = true;

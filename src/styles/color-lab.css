@@ -46,7 +46,7 @@
   width: 46px;
   height: 44px;
   padding: 4px;
-  border: 1px solid var(--line);
+  border: 1px solid rgb(var(--mdui-color-outline));
   border-radius: 12px;
   background: var(--paper);
   cursor: pointer;
@@ -55,7 +55,7 @@
   width: 100%;
   min-width: 0;
   background: var(--paper);
-  border: 1px solid var(--line);
+  border: 1px solid rgb(var(--mdui-color-outline));
   border-radius: 10px;
   padding: 12px;
   color: var(--ink);
@@ -63,7 +63,7 @@
   font-size: 13px;
 }
 .color-input-pair input[aria-invalid="true"] {
-  border-color: #b3261e;
+  border-color: rgb(var(--mdui-color-error));
 }
 .field-help {
   font-size: 11px;
@@ -128,7 +128,7 @@
   margin: 22px 0 0;
 }
 .lab-mode select {
-  border: 1px solid var(--line);
+  border: 1px solid rgb(var(--mdui-color-outline));
   border-radius: 10px;
   padding: 11px;
   background: var(--paper);

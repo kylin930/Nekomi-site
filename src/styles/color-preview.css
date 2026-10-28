@@ -217,3 +217,15 @@ button {
     transition-duration: 0.001ms !important;
   }
 }
+
+.preview-post,
+.preview-avatar,
+.preview-category,
+.preview-navigation,
+.preview-note,
+.preview-roles span {
+  transition:
+    background-color var(--site-effects-fast) var(--site-ease-effects),
+    color var(--site-effects-fast) var(--site-ease-effects),
+    border-color var(--site-effects-fast) var(--site-ease-effects);
+}

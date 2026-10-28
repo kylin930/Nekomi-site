@@ -18,7 +18,7 @@ async def main():
   await page.goto(URL+'demo/#custom-colors',wait_until='networkidle');await page.wait_for_function('!document.querySelector("[data-lab-fields]").disabled')
   frame=page.frames[1];await frame.wait_for_function('document.documentElement.dataset.paletteReady==="true"')
   frame_token=await frame.evaluate('window.__unchangedDOM=document.querySelector(".preview-post");window.__unchangedDOM.dataset.testToken="retained";true')
-  parent_state=await page.evaluate('({classes:document.documentElement.className,style:document.documentElement.getAttribute("style"),mode:document.documentElement.dataset.mode,palette:document.querySelector("style[id^=mdui-custom-color-scheme-]").textContent})')
+  parent_state=await page.evaluate('({classes:document.documentElement.className,style:document.documentElement.getAttribute("style"),mode:document.documentElement.dataset.mode,palette:["primary","surface","on-surface","secondary"].map(r=>getComputedStyle(document.documentElement).getPropertyValue("--mdui-color-"+r))})')
   oracle=await context.new_page();await oracle.goto(URL+'preview/colors/',wait_until='networkidle');await oracle.add_script_tag(path=str(Path('test-results/oracle/oracle.js').resolve()))
   async def compare(color,secondary,mode):
    await page.fill('#lab-primary',color)
@@ -35,26 +35,26 @@ async def main():
    check(await frame.evaluate('document.querySelectorAll("style[id^=mdui-custom-color-scheme-]").length')==1,'single preview palette style')
   for color,secondary,mode in [('#8064B1','','auto'),('#E69DB3','#8C9AC5','light'),('#123456','#B75D28','dark'),('#000000','','light'),('#FFFFFF','','dark'),('#1A2B3C','','auto')]:await compare(color,secondary,mode)
   check(await frame.evaluate('document.querySelector(".preview-post")===window.__unchangedDOM'),'preview DOM retained across updates')
-  check(parent_state==await page.evaluate('({classes:document.documentElement.className,style:document.documentElement.getAttribute("style"),mode:document.documentElement.dataset.mode,palette:document.querySelector("style[id^=mdui-custom-color-scheme-]").textContent})'),'host theme and palette unchanged')
+  check(parent_state==await page.evaluate('({classes:document.documentElement.className,style:document.documentElement.getAttribute("style"),mode:document.documentElement.dataset.mode,palette:["primary","surface","on-surface","secondary"].map(r=>getComputedStyle(document.documentElement).getPropertyValue("--mdui-color-"+r))})'),'host theme and palette unchanged')
   await page.emulate_media(color_scheme='dark');await oracle.emulate_media(color_scheme='dark');await page.wait_for_timeout(60)
   config=json.loads(await page.locator('[data-palette-json]').text_content());check(await tokens(frame)==await oracle.evaluate('(a)=>NekomiThemeOracle.read(a)',config['appearance']),'auto preview follows OS dark')
   await page.emulate_media(color_scheme='light');await oracle.emulate_media(color_scheme='light');await page.wait_for_timeout(60)
   # Error state preserves the prior valid UI, prevents invalid JSON copying, then recovers.
   before=await tokens(frame)
   for invalid in ['#abc','#GGGGGG','123456','#12345678']:
-   await page.fill('#lab-primary',invalid);check(await page.locator('#lab-primary').get_attribute('aria-invalid')=='true','invalid HEX marked');check(await page.locator('[data-copy-palette]').is_disabled(),'invalid config cannot be copied');check(await tokens(frame)==before,'last valid preview retained')
-  await page.fill('#lab-primary','#e69db3');await page.check('#lab-use-secondary');await page.fill('#lab-secondary','#abc');check(await page.locator('[data-copy-palette]').is_disabled(),'invalid secondary blocked')
+   await page.fill('#lab-primary',invalid);check(await page.locator('#lab-primary').get_attribute('aria-invalid')=='true','invalid HEX marked');check(await page.locator('[data-copy-palette]').evaluate('(button)=>button.disabled'),'invalid config cannot be copied');check(await tokens(frame)==before,'last valid preview retained')
+  await page.fill('#lab-primary','#e69db3');await page.check('#lab-use-secondary');await page.fill('#lab-secondary','#abc');check(await page.locator('[data-copy-palette]').evaluate('(button)=>button.disabled'),'invalid secondary blocked')
   await page.fill('#lab-secondary','#8c9ac5');await page.select_option('#lab-mode','dark');await page.locator('[data-copy-palette]').click()
   copied=json.loads(await page.evaluate('navigator.clipboard.readText()'));check(copied==json.loads(await page.locator('[data-palette-json]').text_content()),'copied JSON matches current controls');check(copied['appearance']['secondary']=='#8C9AC5','secondary copied as valid HEX')
   await page.locator('[data-lab-reset]').click();check(json.loads(await page.locator('[data-palette-json]').text_content())=={'appearance':{'preset':'default','color':'#8064B1','secondary':'','mode':'auto'}},'reset restores defaults and clears secondary')
-  await page.locator('[data-lab-color="#B75D28"]').focus();await page.keyboard.press('Enter');check(await page.input_value('#lab-primary')=='#B75D28','keyboard quick color selection')
+  await page.locator('[data-lab-color="#B75D28"]').evaluate('(button)=>button.focus()');await page.keyboard.press('Enter');check(await page.input_value('#lab-primary')=='#B75D28','keyboard quick color selection')
   await page.fill('#lab-primary','#123456');await page.keyboard.press('Tab');check(await page.input_value('#lab-primary')=='#123456','keyboard HEX entry')
   await page.evaluate("document.querySelector('#lab-primary-picker').value='#abcdef';document.querySelector('#lab-primary-picker').dispatchEvent(new Event('input',{bubbles:true}))")
   check(await page.input_value('#lab-primary')=='#abcdef','native color input updates HEX and preview')
   # Host theme switches do not change the independently selected preview mode.
   await page.select_option('#lab-mode','light');await frame.wait_for_function('document.documentElement.classList.contains("mdui-theme-light")');await page.select_option('[data-theme-select]','dark');check(await frame.evaluate('document.documentElement.classList.contains("mdui-theme-light")'),'host dark mode does not override preview light')
   # Original screenshot switching remains usable on a page containing the lab.
-  await page.locator('[data-preset="fresh"]').click();await page.locator('[data-shot-mode]').click();await page.locator('[data-shot-device]').click();check('p30-fresh-home-dark-390.png' in await page.locator('[data-shot]').get_attribute('src'),'real screenshot controls unchanged')
+  await page.locator('[data-preset="fresh"]').click();await page.locator('[data-shot-mode]').click();await page.locator('[data-shot-device]').click();await page.wait_for_function('document.querySelector("[data-showcase]").getAttribute("aria-busy")=="false"');check('p30-fresh-home-dark-390.png' in await page.locator('[data-shot]').get_attribute('src'),'real screenshot controls unchanged')
   await page.select_option('[data-theme-select]','light');await page.locator('#custom-colors').screenshot(path=str(OUT/'color-lab-desktop.png'))
   for width,height in [(768,1024),(390,844),(320,700)]:
    await page.set_viewport_size({'width':width,'height':height});await page.locator('#custom-colors').scroll_into_view_if_needed();await page.wait_for_timeout(80)

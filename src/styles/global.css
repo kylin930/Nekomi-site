@@ -1,40 +1,39 @@
+/* Semantic aliases all derive from MDUI public color roles. */
 :root {
-  --bg: #fcf9ff;
-  --surface: #f2edf7;
-  --surface-high: #ebe3f4;
-  --paper: #fff;
-  --ink: #28232e;
-  --muted: #655b6d;
-  --primary: #705098;
-  --on-primary: #fff;
-  --primary-container: #eaddfa;
-  --line: #ded6e5;
-  --code: #f4f0f7;
-  --green: #5d8275;
-  --header: rgba(252, 249, 255, 0.97);
+  --bg: color-mix(
+    in srgb,
+    rgb(var(--mdui-color-primary-container)) 5%,
+    rgb(var(--mdui-color-surface))
+  );
+  --surface: rgb(var(--mdui-color-surface-container-low));
+  --surface-high: rgb(var(--mdui-color-surface-container-high));
+  --paper: rgb(var(--mdui-color-surface-container-lowest));
+  --ink: rgb(var(--mdui-color-on-surface));
+  --muted: rgb(var(--mdui-color-on-surface-variant));
+  --primary: rgb(var(--mdui-color-primary));
+  --on-primary: rgb(var(--mdui-color-on-primary));
+  --primary-container: rgb(var(--mdui-color-primary-container));
+  --line: rgb(var(--mdui-color-outline-variant));
+  --code: var(--paper);
+  --green: rgb(var(--mdui-color-tertiary));
+  --header: color-mix(in srgb, var(--bg) 97%, transparent);
   font-family:
     Inter, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", system-ui,
     sans-serif;
   color: var(--ink);
   background: var(--bg);
-  color-scheme: light;
   font-synthesis: none;
+  color-scheme: light;
 }
-:root[data-theme="dark"] {
-  --bg: #17141c;
-  --surface: #211c28;
-  --surface-high: #302738;
-  --paper: #211d27;
-  --ink: #eae0ef;
-  --muted: #bbb0c4;
-  --primary: #d2b5fa;
-  --on-primary: #39224f;
-  --primary-container: #46325e;
-  --line: #453c4d;
-  --code: #25202d;
-  --green: #aacdbd;
-  --header: rgba(23, 20, 28, 0.97);
+:root.mdui-theme-dark {
+  --paper: rgb(var(--mdui-color-surface-container-low));
   color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root.mdui-theme-auto {
+    --paper: rgb(var(--mdui-color-surface-container-low));
+    color-scheme: dark;
+  }
 }
 * {
   box-sizing: border-box;
@@ -186,8 +185,11 @@ select {
   color: var(--primary);
   line-height: 1.7;
 }
-.text-link:hover {
-  gap: 16px;
+.text-link svg {
+  transition: transform var(--site-spatial-fast) var(--site-ease-spatial);
+}
+.text-link:is(:hover, :focus-visible) svg {
+  transform: translateX(3px);
 }
 .button {
   display: inline-flex;
@@ -200,8 +202,8 @@ select {
   font-weight: 600;
   font-size: 14px;
   transition:
-    background 0.2s,
-    box-shadow 0.2s;
+    background-color var(--site-effects-default) var(--site-ease-effects),
+    box-shadow var(--site-effects-default) var(--site-ease-effects);
 }
 .button.filled {
   background: var(--primary);
@@ -212,28 +214,13 @@ select {
   color: var(--primary);
 }
 .button:hover {
-  box-shadow: 0 4px 14px #49315b18;
+  box-shadow: var(--mdui-elevation-level1);
 }
 .actions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-}
-.icon-button {
-  border: 0;
-  background: none;
-  padding: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 50px;
-}
-.icon-button:hover {
-  background: var(--surface-high);
 }
 kbd {
   font-family: inherit;
@@ -250,7 +237,7 @@ kbd {
   background: var(--header);
   z-index: 20;
   border-bottom: 1px solid transparent;
-  transition: border-color 0.2s;
+  transition: border-color var(--site-effects-default) var(--site-ease-effects);
 }
 .site-header.scrolled {
   border-color: var(--line);
@@ -339,22 +326,6 @@ kbd {
 .mobile-toggle {
   display: none;
 }
-.mobile-menu {
-  border-top: 1px solid var(--line);
-  padding: 16px 24px 24px;
-  background: var(--bg);
-  max-height: calc(100dvh - 72px);
-  overflow: auto;
-}
-.mobile-menu a {
-  display: block;
-  padding: 12px 18px;
-  border-radius: 16px;
-}
-.mobile-menu a[aria-current] {
-  background: var(--primary-container);
-  color: var(--primary);
-}
 .hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -437,33 +408,6 @@ kbd {
   margin-bottom: 14px;
   gap: 10px;
 }
-.preset-control {
-  display: flex;
-  gap: 3px;
-  padding: 4px;
-  background: var(--bg);
-  border-radius: 28px;
-}
-.preset-control button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  padding: 10px 18px;
-  border-radius: 24px;
-  font-size: 13px;
-  transition: background 0.2s;
-}
-.preset-control button[aria-pressed="true"] {
-  background: var(--primary-container);
-  color: var(--primary);
-  font-weight: 600;
-}
-.preset-control button:hover {
-  background: var(--surface);
-}
 .preset-control i {
   width: 9px;
   height: 9px;
@@ -480,16 +424,12 @@ kbd {
   display: flex;
   gap: 4px;
 }
-.preview-controls button[aria-pressed="true"] {
-  background: var(--primary-container);
-  color: var(--primary);
-}
 .browser-frame {
   border-radius: 14px 14px 2px 2px;
   overflow: hidden;
   background: var(--paper);
   border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
-  box-shadow: 0 8px 24px #28173b0c;
+  box-shadow: var(--mdui-elevation-level1);
 }
 .browser-bar {
   display: flex;
@@ -503,14 +443,14 @@ kbd {
 .browser-bar span:first-child {
   letter-spacing: 3px;
   font-size: 9px;
-  color: #b7a9c6;
+  color: var(--muted);
 }
 .browser-frame img {
   width: 100%;
   aspect-ratio: 1440/900;
   object-fit: contain;
   object-position: top;
-  background: #fdf7ff;
+  background: var(--surface);
 }
 .shot-figure figcaption {
   display: flex;
@@ -699,7 +639,8 @@ kbd {
   gap: 26px;
   padding: 28px 8px;
   border-bottom: 1px solid var(--line);
-  transition: background 0.2s;
+  transition: background-color var(--site-effects-default)
+    var(--site-ease-effects);
 }
 .feature-row:hover {
   background: var(--surface);
@@ -782,10 +723,6 @@ kbd {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  background: var(--primary-container);
-  color: var(--primary);
-  border-radius: 17px;
-  box-shadow: 0 3px 12px #28173b18;
   z-index: 15;
 }
 .page-heading {
@@ -1396,19 +1333,21 @@ html[data-theme="dark"] .astro-code span {
   padding-top: 30px;
 }
 /* Search dialog */
+/* Modal containers use public MDUI parts only. */
 .search-dialog {
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: var(--bg);
-  color: var(--ink);
-  width: min(680px, calc(100% - 32px));
-  max-height: min(680px, 85dvh);
-  box-shadow: 0 24px 80px #160f2a30;
+  --z-index: 100;
+  --shape-corner: var(--site-shape-large);
+}
+.search-dialog::part(panel) {
+  width: min(680px, calc(100vw - 32px));
+  max-width: 680px;
+  max-height: 85dvh;
+  border-radius: var(--site-shape-large);
   overflow: hidden;
 }
-.search-dialog::backdrop {
-  background: #17101f70;
+.search-dialog::part(body) {
+  padding: 0;
+  overflow: hidden;
 }
 .search-top {
   display: flex;
@@ -1477,28 +1416,18 @@ html[data-theme="dark"] .astro-code span {
   font-size: 10px;
   color: var(--muted);
 }
-@view-transition {
-  navigation: auto;
-}
-::view-transition-old(root) {
-  animation: fade-out 0.12s ease both;
-}
-::view-transition-new(root) {
-  animation: fade-in 0.2s ease both;
+/* First-paint effects keep document navigation native and avoid browser
+   cross-document transition cancellation races during preference changes. */
+main {
+  animation: fade-in var(--site-effects-default) var(--site-ease-effects) both;
 }
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
   }
   to {
     opacity: 1;
     transform: none;
-  }
-}
-@keyframes fade-out {
-  to {
-    opacity: 0;
   }
 }
 @media (min-width: 1400px) {
@@ -1672,10 +1601,6 @@ html[data-theme="dark"] .astro-code span {
   .header-tools > .github-link {
     display: none;
   }
-  .header-tools > .icon-button {
-    min-width: 40px;
-    padding: 10px;
-  }
   .header-tools .theme-select svg {
     display: none;
   }
@@ -1745,26 +1670,12 @@ html[data-theme="dark"] .astro-code span {
     gap: 4px;
     margin-bottom: 10px;
   }
-  .preset-control {
-    padding: 3px;
-    gap: 0;
-  }
-  .preset-control button {
-    font-size: 11px;
-    padding: 9px 10px;
-    gap: 5px;
-  }
   .preset-control i {
     width: 7px;
     height: 7px;
   }
   .preview-controls {
     gap: 0;
-  }
-  .preview-controls button {
-    min-width: 32px;
-    min-height: 36px;
-    padding: 8px;
   }
   .preview-controls svg {
     width: 17px;
@@ -2088,10 +1999,6 @@ html[data-theme="dark"] .astro-code span {
   }
   .hero-intro .actions > .text-link {
     margin: 4px 0 0 7px;
-  }
-  .preset-control button {
-    padding: 8px;
-    font-size: 10px;
   }
   .header-tools .theme-select select {
     max-width: 72px;

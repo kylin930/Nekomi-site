@@ -1,4 +1,5 @@
 ---
+import Action from "../../components/Action.astro";
 import Base from "../../layouts/Base.astro";
 import Icon from "../../components/Icon.astro";
 import { withBase } from "../../../website.config.mjs";
@@ -173,9 +174,9 @@ const sections = [
         <h2>先运行起来，再慢慢探索。</h2>
         <p>从快速开始进入你的第一个 Nekomi 博客。</p>
       </div>
-      <a class="button filled" href={withBase("docs/getting-started/")}>
+      <Action variant="filled" href={withBase("docs/getting-started/")}>
         开始使用 <Icon name="arrow" />
-      </a>
+      </Action>
     </section>
   </div>
 </Base>

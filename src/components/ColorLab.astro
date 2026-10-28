@@ -63,7 +63,8 @@ import "../styles/color-lab.css";
           <legend>常用主色</legend>
           <div>
             {colorChoices.map((c) => (
-              <button
+              <mdui-button
+                variant="outlined"
                 type="button"
                 data-lab-color={c.color}
                 class="color-choice"
@@ -73,7 +74,7 @@ import "../styles/color-lab.css";
               >
                 <span aria-hidden="true"></span>
                 {c.name}
-              </button>
+              </mdui-button>
             ))}
           </div>
         </fieldset>
@@ -126,9 +127,14 @@ import "../styles/color-lab.css";
           role="status"
           aria-live="polite"
         ></p>
-        <button type="button" class="text-link lab-reset" data-lab-reset>
+        <mdui-button
+          variant="text"
+          type="button"
+          class="lab-reset"
+          data-lab-reset
+        >
           恢复默认配色 <Icon name="arrow" size={16} />
-        </button>
+        </mdui-button>
       </fieldset>
       <a class="text-link lab-mobile-jump" href="#lab-preview-pane">
         查看当前配色 ↓
@@ -170,9 +176,9 @@ import "../styles/color-lab.css";
         Fresh / Minimal，请保留自己的 preset
         值。关闭辅助色时，空字符串用于清除已有覆盖。
       </p>
-      <button type="button" class="button filled" data-copy-palette disabled>
+      <mdui-button type="button" variant="filled" data-copy-palette disabled>
         复制配置 JSON <Icon name="copy" size={18} />
-      </button>
+      </mdui-button>
       <p role="status" data-lab-copy-status class="field-help"></p>
     </div>
     <pre

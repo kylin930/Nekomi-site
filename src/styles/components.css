@@ -1,0 +1,411 @@
+/* Only public MDUI properties, custom properties and parts are styled here. */
+.enhanced-only,
+mdui-dialog:not(:defined),
+mdui-navigation-drawer:not(:defined),
+mdui-fab:not(:defined),
+.action-link mdui-button:not(:defined) {
+  display: none;
+}
+html[data-ui-ready] .enhanced-only {
+  display: inline-flex;
+}
+html[data-ui-ready] .fallback-only {
+  display: none;
+}
+.action-link {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.action-link mdui-button:defined + .action-fallback {
+  display: none;
+}
+.action-link mdui-button {
+  --shape-corner: var(--site-shape-full);
+  font-weight: 600;
+}
+.action-link mdui-button::part(button) {
+  min-height: 48px;
+  padding-inline: 24px;
+}
+.action-link mdui-button::part(label) {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.page-heading > .action-link {
+  margin-top: 25px;
+}
+mdui-button-icon {
+  flex-shrink: 0;
+}
+mdui-button-icon svg,
+mdui-fab svg {
+  width: 22px;
+  height: 22px;
+}
+.search-action {
+  align-items: center;
+  gap: 2px;
+}
+html[data-ui-ready] .mobile-toggle {
+  display: none;
+}
+.mobile-nav-fallback {
+  padding: 10px 24px;
+  border-top: 1px solid var(--line);
+}
+.mobile-nav-fallback summary {
+  cursor: pointer;
+}
+.mobile-nav-fallback nav {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0;
+}
+.mobile-nav-fallback a {
+  padding: 10px;
+}
+.site-drawer {
+  --z-index: 90;
+  --shape-corner: 28px;
+}
+.site-drawer::part(panel) {
+  width: min(340px, 90vw);
+  max-width: 90vw;
+  padding: 24px 20px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.drawer-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.drawer-links {
+  display: grid;
+  gap: 8px;
+}
+.drawer-links a {
+  padding: 16px 22px;
+  border-radius: var(--site-shape-full);
+  color: var(--muted);
+}
+.drawer-links a[aria-current] {
+  background: var(--primary-container);
+  color: rgb(var(--mdui-color-on-primary-container));
+  font-weight: 600;
+}
+.drawer-links a:hover {
+  background: var(--surface-high);
+}
+.back-top {
+  --shape-corner-small: 16px;
+}
+.search-dialog::part(body) {
+  display: flex;
+  flex-direction: column;
+  max-height: 85dvh;
+}
+.search-top,
+.search-bottom,
+#search-status {
+  flex-shrink: 0;
+}
+#search-results {
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+.search-entry {
+  display: none;
+}
+.search-entry:defined {
+  display: flex;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.search-entry::part(button) {
+  width: 100%;
+  min-height: 64px;
+  border-color: rgb(var(--mdui-color-outline));
+  border-radius: 18px;
+  background: var(--surface);
+  padding: 16px 20px;
+}
+.search-entry::part(label) {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  white-space: normal;
+  text-align: left;
+}
+.preset-control {
+  padding: 0;
+  gap: 0;
+  background: none;
+}
+.preset-control:has(mdui-button:not(:defined)),
+.preview-controls:has(mdui-button-icon:not(:defined)) {
+  visibility: hidden;
+}
+.preset-control mdui-button {
+  font-size: 13px;
+  min-width: 0;
+}
+.preset-control mdui-button::part(button) {
+  padding-inline: 18px;
+}
+.preset-control mdui-button::part(label) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.preview-controls mdui-button-icon[aria-pressed="true"] {
+  color: rgb(var(--mdui-color-on-primary-container));
+  background: var(--primary-container);
+}
+.shot-stage {
+  position: relative;
+  height: auto;
+  aspect-ratio: 1440/940;
+  min-height: 430px;
+  contain: layout;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+.shot-stage .browser-frame {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+.shot-stage [data-shot-full] {
+  display: block;
+  position: relative;
+  aspect-ratio: 1440/900;
+  background: var(--surface);
+}
+.shot-stage img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
+  aspect-ratio: auto;
+}
+.shot-stage .shot-previous {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.showcase[data-device="mobile"] .shot-stage .browser-frame {
+  width: min(340px, 100%);
+  max-width: calc((100cqh - 34px) * 390 / 844);
+  margin: 0;
+  border-radius: 24px;
+}
+.showcase[data-device="mobile"] .shot-stage [data-shot-full] {
+  aspect-ratio: 390/844;
+}
+.showcase[data-device="mobile"] .shot-stage img {
+  aspect-ratio: auto;
+}
+.shot-fallback {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 20px;
+  font-size: 13px;
+}
+.showcase[aria-busy="true"] .browser-bar {
+  color: var(--primary);
+}
+.color-choice {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.color-choice::part(button) {
+  min-height: 40px;
+  padding: 8px 10px;
+  border-color: rgb(var(--mdui-color-outline));
+}
+.color-choice::part(label) {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.color-choice span {
+  display: inline-block;
+}
+.lab-reset {
+  padding: 0;
+}
+[data-copy-palette] {
+  margin-top: 8px;
+}
+.copy-code {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.copy-code::part(button) {
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: var(--surface);
+}
+.copy-code:focus-within {
+  opacity: 1;
+}
+.desktop-nav a,
+.drawer-links a,
+.doc-nav-group a,
+.docs-toc nav a,
+.doc-pagination a,
+#search-results a,
+.doc-shortcuts a {
+  transition:
+    background-color var(--site-effects-fast) var(--site-ease-effects),
+    color var(--site-effects-fast) var(--site-ease-effects),
+    border-color var(--site-effects-fast) var(--site-ease-effects);
+}
+.docs-toc nav a {
+  border-left-width: 2px;
+}
+.feature-row svg,
+.faq-plus {
+  transition: transform var(--site-spatial-fast) var(--site-ease-spatial);
+}
+.feature-row:is(:hover, :focus-visible) > svg {
+  transform: translateX(4px);
+}
+.feature-row:focus-visible {
+  background: var(--surface);
+}
+.doc-pagination a:hover {
+  background: var(--surface);
+}
+/* Starts at the first styled paint, without hiding static content while JS downloads. */
+.hero-title,
+.hero-intro {
+  animation: hero-enter var(--site-spatial-default) var(--site-ease-decelerate)
+    both;
+}
+.hero-intro {
+  animation-delay: 40ms;
+}
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Native details stays usable without JavaScript; supported browsers animate its content. */
+@supports (interpolate-size: allow-keywords) and
+  selector(details::details-content) {
+  .faq-list details {
+    interpolate-size: allow-keywords;
+  }
+  .faq-list details::details-content {
+    height: 0;
+    opacity: 0;
+    overflow: clip;
+    transition:
+      height var(--site-spatial-fast) var(--site-ease-decelerate),
+      opacity var(--site-effects-default) var(--site-ease-effects),
+      content-visibility var(--site-spatial-fast) allow-discrete;
+  }
+  .faq-list details[open]::details-content {
+    height: auto;
+    opacity: 1;
+  }
+}
+@media (min-width: 961px) {
+  .mobile-nav-fallback {
+    display: none;
+  }
+}
+@media (max-width: 960px) {
+  html[data-ui-ready] .mobile-toggle {
+    display: inline-flex;
+  }
+}
+@media (max-width: 700px) {
+  .action-link mdui-button::part(button) {
+    padding-inline: 20px;
+    min-height: 46px;
+  }
+  .preset-control mdui-button {
+    font-size: 11px;
+  }
+  .preset-control mdui-button::part(button) {
+    padding-inline: 9px;
+  }
+  .preset-control mdui-button::part(label) {
+    gap: 5px;
+  }
+  .preview-controls mdui-button-icon {
+    width: 36px;
+    height: 40px;
+  }
+  .showcase-toolbar {
+    flex-wrap: wrap;
+  }
+  .shot-stage {
+    height: clamp(430px, 100vw, 650px);
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+  .showcase[data-device="mobile"] .shot-stage .browser-frame {
+    max-width: calc((100cqh - 28px) * 390 / 844);
+  }
+  .search-entry::part(button) {
+    padding: 14px;
+  }
+  .search-entry::part(label) {
+    gap: 10px;
+    font-size: 12px;
+  }
+  .search-entry kbd {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  main,
+  .hero-title,
+  .hero-intro {
+    animation: none;
+  }
+  .text-link:is(:hover, :focus-visible) svg,
+  .feature-row:is(:hover, :focus-visible) > svg {
+    transform: none;
+  }
+  .faq-list details::details-content {
+    transition: none;
+  }
+  .faq-plus {
+    transition: none;
+  }
+}
+
+.preset-control {
+  display: flex;
+  gap: 5px;
+}
+.preset-control mdui-button {
+  --shape-corner: 12px;
+}
+.preset-control mdui-button:first-child {
+  --shape-corner: 24px 12px 12px 24px;
+}
+.preset-control mdui-button:last-child {
+  --shape-corner: 12px 24px 24px 12px;
+}

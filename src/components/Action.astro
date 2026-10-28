@@ -1,0 +1,23 @@
+---
+interface Props {
+  href: string;
+  variant?: "filled" | "tonal" | "outlined" | "text";
+  target?: string;
+  rel?: string;
+}
+const { href, variant = "filled", target, rel } = Astro.props;
+---
+
+<span class="action-link">
+  <mdui-button href={href} variant={variant} target={target} rel={rel}>
+    <slot />
+  </mdui-button>
+  <a
+    class:list={["button", "action-fallback", variant]}
+    href={href}
+    target={target}
+    rel={rel}
+  >
+    <slot />
+  </a>
+</span>

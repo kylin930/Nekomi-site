@@ -14,66 +14,102 @@ const { compact = false } = Astro.props;
   aria-label="真实主题截图展示"
 >
   <div class="showcase-toolbar">
-    <div class="preset-control" role="group" aria-label="设计预设截图">
+    <div
+      class="preset-control"
+      data-preset-group
+      role="group"
+      aria-label="设计预设截图"
+    >
       {[
         ["default", "Default"],
         ["fresh", "Fresh"],
         ["minimal", "Minimal"],
       ].map(([v, l]) => (
-        <button data-preset={v} aria-pressed={v === "default"}>
+        <mdui-button
+          data-preset={v}
+          variant={v === "default" ? "tonal" : "outlined"}
+        >
           <i class={v}></i>
           {l}
-        </button>
+          <span class="sr-only" data-preset-state>
+            {v === "default" ? "，当前预设" : ""}
+          </span>
+        </mdui-button>
       ))}
     </div>
     <div class="preview-controls">
-      <button
-        class="icon-button"
+      <mdui-button-icon
         data-shot-mode
         aria-label="切换为深色截图"
         aria-pressed="false"
       >
         <Icon name="moon" />
-      </button>
-      <button
-        class="icon-button"
+        <span class="sr-only" data-shot-label>
+          切换为深色截图
+        </span>
+      </mdui-button-icon>
+      <mdui-button-icon
         data-shot-device
         aria-label="切换为手机截图"
         aria-pressed="false"
       >
         <Icon name="mobile" />
-      </button>
+        <span class="sr-only" data-shot-label>
+          切换为手机截图
+        </span>
+      </mdui-button-icon>
     </div>
   </div>
   <figure class="shot-figure">
-    <div class="browser-frame">
-      <div class="browser-bar" aria-hidden="true">
-        <span>● ● ●</span>
-        <span>Nekomi · 主题预览</span>
-        <span>↗</span>
+    <div class="shot-stage">
+      <div class="browser-frame">
+        <div class="browser-bar" aria-hidden="true">
+          <span>● ● ●</span>
+          <span>Nekomi · 主题预览</span>
+          <span>↗</span>
+        </div>
+        <a
+          data-shot-full
+          href={withBase("screenshots/p30-default-home-light-1440.png")}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="打开当前真实截图原图"
+        >
+          <img
+            data-shot
+            src={withBase("screenshots/p30-default-home-light-1440.png")}
+            alt="Default 预设 · 浅色 · 桌面首页真实截图"
+            width="1440"
+            height="900"
+            loading={compact ? "lazy" : "eager"}
+            fetchpriority={compact ? "auto" : "high"}
+          />
+          <img
+            class="shot-previous"
+            data-shot-previous
+            alt=""
+            aria-hidden="true"
+            hidden
+          />
+        </a>
       </div>
-      <a
-        data-shot-full
-        href={withBase("screenshots/p30-default-home-light-1440.png")}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="打开当前真实截图原图"
-      >
-        <img
-          data-shot
-          src={withBase("screenshots/p30-default-home-light-1440.png")}
-          alt="Default 预设 · 浅色 · 桌面首页真实截图"
-          width="1440"
-          height="900"
-          loading={compact ? "lazy" : "eager"}
-          fetchpriority={compact ? "auto" : "high"}
-        />
-      </a>
     </div>
     <figcaption>
       <span data-shot-caption>Default · 浅色 · 桌面</span>
       <span>来自主题仓库的真实截图 · 点击查看原图</span>
     </figcaption>
   </figure>
+  <noscript>
+    <nav class="shot-fallback" aria-label="预设截图原图">
+      {["default", "fresh", "minimal"].map((preset) => (
+        <a href={withBase(`screenshots/p30-${preset}-home-light-1440.png`)}>
+          {preset} 原图 ↗
+        </a>
+      ))}
+    </nav>
+  </noscript>
+  <mdui-button variant="text" data-shot-retry hidden>
+    重试加载截图
+  </mdui-button>
   <p class="sr-only" role="status" data-shot-status></p>
 </section>

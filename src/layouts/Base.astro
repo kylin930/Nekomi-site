@@ -1,6 +1,10 @@
 ---
 import "mdui/mdui.css";
+import "../styles/brand-palette.css";
+import "../styles/motion-tokens.css";
+import { brandPaletteClass } from "../lib/design.mjs";
 import "../styles/global.css";
+import "../styles/components.css";
 import Icon from "../components/Icon.astro";
 import Logo from "../components/Logo.astro";
 import { settings, withBase, absolute } from "../../website.config.mjs";
@@ -35,7 +39,7 @@ const active = (path: string) =>
 ---
 
 <!doctype html>
-<html lang="zh-CN" class="mdui-theme-light">
+<html lang="zh-CN" class:list={["mdui-theme-auto", brandPaletteClass]}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -75,7 +79,9 @@ const active = (path: string) =>
       (() => {
         let mode = "system";
         try {
-          mode = localStorage.getItem("nekomi-website-theme") || mode;
+          const saved = localStorage.getItem("nekomi-website-theme");
+          if (["system", "light", "dark"].includes(saved || ""))
+            mode = saved || mode;
         } catch {}
         const dark =
           mode === "dark" ||
@@ -83,8 +89,14 @@ const active = (path: string) =>
             matchMedia("(prefers-color-scheme: dark)").matches);
         document.documentElement.dataset.mode = mode;
         document.documentElement.dataset.theme = dark ? "dark" : "light";
-        document.documentElement.className =
-          "mdui-theme-" + (dark ? "dark" : "light");
+        document.documentElement.classList.remove(
+          "mdui-theme-auto",
+          "mdui-theme-light",
+          "mdui-theme-dark",
+        );
+        document.documentElement.classList.add(
+          "mdui-theme-" + (dark ? "dark" : "light"),
+        );
       })();
     </script>
     {canonical && (
@@ -122,10 +134,13 @@ const active = (path: string) =>
           ))}
         </nav>
         <div class="header-tools">
-          <button class="icon-button" data-open-search aria-label="搜索文档">
-            <Icon name="search" />
-            <kbd>⌘ K</kbd>
-          </button>
+          <span class="search-action enhanced-only">
+            <mdui-button-icon data-open-search aria-label="搜索文档">
+              <Icon name="search" />
+              <span class="sr-only">搜索文档</span>
+            </mdui-button-icon>
+            <kbd aria-hidden="true">⌘ K</kbd>
+          </span>
           <label class="theme-select">
             <Icon name="sun" />
             <span class="sr-only">配色模式</span>
@@ -144,23 +159,51 @@ const active = (path: string) =>
           >
             <Icon name="github" />
           </a>
-          <button
-            class="icon-button mobile-toggle"
+          <mdui-button-icon
+            class="mobile-toggle enhanced-only"
             aria-label="打开导航菜单"
             data-menu-toggle
             aria-expanded="false"
             aria-controls="mobile-menu"
           >
             <Icon name="menu" />
-          </button>
+            <span class="sr-only">打开导航菜单</span>
+          </mdui-button-icon>
         </div>
       </div>
-      <nav
-        id="mobile-menu"
-        class="mobile-menu"
-        aria-label="移动端主导航"
-        hidden
-      >
+      <noscript>
+        <details class="mobile-nav-fallback fallback-only">
+          <summary>导航</summary>
+          <nav aria-label="无脚本主导航">
+            {nav.map(([path, label]) => (
+              <a href={withBase(path)}>{label}</a>
+            ))}
+            <a href={withBase("faq/")}>常见问题</a>
+          </nav>
+        </details>
+      </noscript>
+    </header>
+    <mdui-navigation-drawer
+      id="mobile-menu"
+      class="site-drawer"
+      role="dialog"
+      aria-modal="true"
+      modal
+      close-on-esc
+      close-on-overlay-click
+      placement="right"
+      aria-label="主导航"
+    >
+      <div class="drawer-heading">
+        <a class="brand" href={withBase()}>
+          <Logo />
+        </a>
+        <mdui-button-icon data-menu-close aria-label="关闭导航菜单">
+          <Icon name="close" />
+          <span class="sr-only">关闭导航菜单</span>
+        </mdui-button-icon>
+      </div>
+      <nav class="drawer-links" aria-label="移动端主导航">
         {nav.map(([path, label]) => (
           <a
             href={withBase(path)}
@@ -172,7 +215,7 @@ const active = (path: string) =>
         <a href={withBase("faq/")}>常见问题</a>
         <a href={settings.github}>GitHub ↗</a>
       </nav>
-    </header>
+    </mdui-navigation-drawer>
     <main id="main" tabindex="-1">
       <slot />
     </main>
@@ -197,16 +240,25 @@ const active = (path: string) =>
         静态、轻盈，属于你。
       </span>
     </footer>
-    <button
-      class="back-top icon-button"
+    <mdui-fab
+      class="back-top"
       data-back-top
+      size="small"
+      variant="primary"
       aria-label="返回顶部"
       hidden
     >
-      <Icon name="up" />
-    </button>
-    <dialog
+      <span slot="icon">
+        <Icon name="up" />
+        <span class="sr-only">返回顶部</span>
+      </span>
+    </mdui-fab>
+    <mdui-dialog
+      close-on-esc
+      close-on-overlay-click
       class="search-dialog"
+      role="dialog"
+      aria-modal="true"
       id="doc-search"
       aria-labelledby="search-title"
       data-index={withBase("search-index.json")}
@@ -221,10 +273,12 @@ const active = (path: string) =>
           type="search"
           placeholder="搜索文档，例如：壁纸、评论、部署"
           autocomplete="off"
+          autofocus
         />
-        <button class="icon-button" data-close-search aria-label="关闭搜索">
+        <mdui-button-icon data-close-search aria-label="关闭搜索">
           <Icon name="close" />
-        </button>
+          <span class="sr-only">关闭搜索</span>
+        </mdui-button-icon>
       </div>
       <p id="search-status" role="status">
         输入关键词，查找指南和配置。
@@ -234,7 +288,7 @@ const active = (path: string) =>
         <span>↑ ↓ 选择 · Enter 打开</span>
         <span>Esc 关闭</span>
       </div>
-    </dialog>
+    </mdui-dialog>
     <noscript>
       <p class="wrap">
         文档搜索需要 JavaScript；可通过<a href={withBase("docs/")}>文档目录</a>

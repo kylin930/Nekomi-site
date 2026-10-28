@@ -1,4 +1,5 @@
 ---
+import Action from "../../components/Action.astro";
 import Base from "../../layouts/Base.astro";
 import ColorLab from "../../components/ColorLab.astro";
 import Showcase from "../../components/Showcase.astro";
@@ -20,14 +21,14 @@ import { settings, withBase } from "../../../website.config.mjs";
         提供不同的设计起点，主色与辅助色都可以自由配置。先看看真实截图，再试一试自己的配色。
       </p>
       {settings.demoUrl ? (
-        <a
-          class="button filled"
+        <Action
+          variant="filled"
           href={settings.demoUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
           打开在线 Demo <Icon name="external" />
-        </a>
+        </Action>
       ) : (
         <p class="subtle-note">目前提供真实截图展示，在线 Demo 尚未配置。</p>
       )}

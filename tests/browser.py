@@ -31,7 +31,7 @@ async def main():
     if mobile:await page.locator('[data-shot-device]').click()
     for dark in [False,True]:
      if dark:await page.locator('[data-shot-mode]').click()
-     await page.wait_for_function('document.querySelector("[data-shot]").complete')
+     await page.wait_for_function('document.querySelector("[data-showcase]").getAttribute("aria-busy")==="false"')
      expected=f'p30-{preset}-home-{"dark" if dark else "light"}-{"390" if mobile else "1440"}.png'
      check((await page.locator('[data-shot]').get_attribute('src')).endswith(expected),f'screenshot {expected}')
      check(await page.locator('[data-shot]').evaluate('(i)=>i.naturalWidth>0'),f'loaded {expected}')
@@ -74,7 +74,7 @@ async def main():
   check(not await page.locator('.docs-nav-details').evaluate('(d)=>d.open'),'mobile docs navigation starts collapsed')
   await page.locator('.docs-nav-details summary').click();check(await page.locator('.docs-nav-details nav').is_visible(),'mobile docs menu opens')
   await page.locator('[data-menu-toggle]').click();check(await page.locator('#mobile-menu').is_visible(),'mobile main menu opens')
-  await page.keyboard.press('Escape');check(not await page.locator('#mobile-menu').is_visible(),'Escape closes mobile menu')
+  await page.keyboard.press('Escape');await page.wait_for_function('!document.querySelector("#mobile-menu").open');await page.wait_for_timeout(250);check(not await page.locator('#mobile-menu').is_visible(),'Escape closes mobile menu')
   await page.locator('.docs-nav-details summary').click();await page.locator('.mobile-toc summary').click()
   await page.locator('.mobile-toc a').filter(has_text='数学公式').first.click()
   check(await page.locator('#数学公式').evaluate('(e)=>e.getBoundingClientRect().top>=65'),'anchor clears sticky header')

@@ -1,6 +1,6 @@
-import "mdui/components/button.js";
-import { setColorScheme } from "mdui/functions/setColorScheme.js";
-setColorScheme("#8064b1");
+import { dialog, openSearch as showSearch, closeSearch } from "./ui";
+import "./showcase";
+import { animate } from "./motion";
 const $ = <T extends Element = HTMLElement>(s: string) =>
   document.querySelector<T>(s);
 const media = matchMedia("(prefers-color-scheme: dark)");
@@ -11,6 +11,7 @@ function applyTheme() {
   document.documentElement.dataset.theme = dark ? "dark" : "light";
   document.documentElement.dataset.mode = mode;
   document.documentElement.classList.remove(
+    "mdui-theme-auto",
     "mdui-theme-light",
     "mdui-theme-dark",
   );
@@ -30,102 +31,13 @@ themeSelect?.addEventListener("change", () => {
 media.addEventListener("change", applyTheme);
 window.addEventListener("storage", (e) => {
   if (e.key === "nekomi-website-theme") {
-    mode = e.newValue || "system";
+    mode = ["system", "light", "dark"].includes(e.newValue || "")
+      ? e.newValue!
+      : "system";
     applyTheme();
   }
 });
-const menu = $("#mobile-menu");
-const toggle = $("[data-menu-toggle]");
-function closeMenu() {
-  if (menu) menu.hidden = true;
-  toggle?.setAttribute("aria-expanded", "false");
-}
-toggle?.addEventListener("click", () => {
-  if (!menu) return;
-  menu.hidden = !menu.hidden;
-  toggle.setAttribute("aria-expanded", String(!menu.hidden));
-});
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && menu && !menu.hidden) {
-    closeMenu();
-    (toggle as HTMLElement)?.focus();
-  }
-});
-document.addEventListener("click", (e) => {
-  if (menu && !menu.hidden && !(e.target as Element).closest(".site-header"))
-    closeMenu();
-});
-matchMedia("(min-width: 961px)").addEventListener("change", closeMenu);
-const topButton = $<HTMLButtonElement>("[data-back-top]");
-function scrollFeedback() {
-  $(".site-header")?.classList.toggle("scrolled", scrollY > 8);
-  if (topButton) topButton.hidden = scrollY < 450;
-}
-window.addEventListener("scroll", scrollFeedback, { passive: true });
-scrollFeedback();
-topButton?.addEventListener("click", () => {
-  $("#main")?.focus({ preventScroll: true });
-  window.scrollTo({
-    top: 0,
-    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? "instant"
-      : "smooth",
-  });
-});
-// Native document navigation preserves history and scroll restoration, with progressive cross-document View Transitions.
-document.querySelectorAll<HTMLElement>("[data-showcase]").forEach((root) => {
-  let preset = "default",
-    dark = document.documentElement.dataset.theme === "dark",
-    mobile = matchMedia("(max-width: 700px)").matches;
-  const image = root.querySelector<HTMLImageElement>("[data-shot]")!;
-  const full = root.querySelector<HTMLAnchorElement>("[data-shot-full]")!;
-  const caption = root.querySelector("[data-shot-caption]")!;
-  const status = root.querySelector("[data-shot-status]")!;
-  function update() {
-    const label = `${preset[0].toUpperCase() + preset.slice(1)} · ${dark ? "深色" : "浅色"} · ${mobile ? "手机" : "桌面"}`;
-    const src = `${root.dataset.base}p30-${preset}-home-${dark ? "dark" : "light"}-${mobile ? "390" : "1440"}.png`;
-    image.src = src;
-    image.alt = label + "首页真实截图";
-    image.width = mobile ? 390 : 1440;
-    image.height = mobile ? 844 : 900;
-    full.href = src;
-    caption.textContent = label;
-    status.textContent = "已切换为 " + label;
-    root.dataset.device = mobile ? "mobile" : "desktop";
-    root
-      .querySelectorAll<HTMLElement>("[data-preset]")
-      .forEach((b) =>
-        b.setAttribute("aria-pressed", String(b.dataset.preset === preset)),
-      );
-    root
-      .querySelector("[data-shot-mode]")
-      ?.setAttribute("aria-label", `切换为${dark ? "浅色" : "深色"}截图`);
-    root
-      .querySelector("[data-shot-mode]")
-      ?.setAttribute("aria-pressed", String(dark));
-    root
-      .querySelector("[data-shot-device]")
-      ?.setAttribute("aria-label", `切换为${mobile ? "桌面" : "手机"}截图`);
-    root
-      .querySelector("[data-shot-device]")
-      ?.setAttribute("aria-pressed", String(mobile));
-  }
-  update();
-  root.querySelectorAll<HTMLElement>("[data-preset]").forEach((b) =>
-    b.addEventListener("click", () => {
-      preset = b.dataset.preset!;
-      update();
-    }),
-  );
-  root.querySelector("[data-shot-mode]")?.addEventListener("click", () => {
-    dark = !dark;
-    update();
-  });
-  root.querySelector("[data-shot-device]")?.addEventListener("click", () => {
-    mobile = !mobile;
-    update();
-  });
-});
+// Native document navigation preserves history, links and scroll restoration.
 // Copy reads the original code element; button labels never enter copied text.
 document.querySelectorAll<HTMLPreElement>(".prose pre").forEach((pre) => {
   const button = document.createElement("mdui-button");
@@ -183,19 +95,11 @@ interface Entry {
   text: string;
   url: string;
 }
-const dialog = $<HTMLDialogElement>("#doc-search")!;
 const input = $<HTMLInputElement>("#search-input")!;
 const results = $("#search-results")!;
 const searchStatus = $("#search-status")!;
 let indexPromise: Promise<Entry[]> | undefined;
 let queryId = 0;
-// Close before document navigation so a restored history entry has no stale modal.
-results.addEventListener("click", (event) => {
-  if ((event.target as Element).closest("a")) dialog.close();
-});
-window.addEventListener("pagehide", () => {
-  if (dialog.open) dialog.close();
-});
 function index(): Promise<Entry[]> {
   return (indexPromise ??= fetch(dialog.dataset.index!)
     .then((r) => {
@@ -208,9 +112,7 @@ function index(): Promise<Entry[]> {
     }));
 }
 function openSearch() {
-  closeMenu();
-  if (!dialog.open) dialog.showModal();
-  input.focus();
+  showSearch();
   void index().catch(() => {
     searchStatus.textContent = "索引加载失败，请检查网络后重新输入以重试。";
   });
@@ -218,19 +120,7 @@ function openSearch() {
 document
   .querySelectorAll("[data-open-search]")
   .forEach((b) => b.addEventListener("click", openSearch));
-$("[data-close-search]")?.addEventListener("click", () => dialog.close());
-dialog.addEventListener("click", (e) => {
-  if (e.target === dialog) {
-    const r = dialog.getBoundingClientRect();
-    if (
-      e.clientX < r.left ||
-      e.clientX > r.right ||
-      e.clientY < r.top ||
-      e.clientY > r.bottom
-    )
-      dialog.close();
-  }
-});
+$("[data-close-search]")?.addEventListener("click", closeSearch);
 document.addEventListener("keydown", (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
     e.preventDefault();
@@ -287,6 +177,13 @@ input.addEventListener("input", async () => {
       a.append(small, strong, p);
       results.append(a);
     }
+    void animate(
+      results,
+      "results",
+      [{ opacity: 0.65 }, { opacity: 1 }],
+      "effects",
+      true,
+    );
   } catch {
     if (id === queryId)
       searchStatus.textContent = "索引加载失败，请检查网络后重新输入以重试。";
@@ -296,7 +193,7 @@ dialog.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     // type=search may consume the first Escape to clear its native input.
     e.preventDefault();
-    dialog.close();
+    closeSearch();
     return;
   }
   const links = [...results.querySelectorAll<HTMLAnchorElement>("a")];
