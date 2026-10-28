@@ -106,6 +106,13 @@ export const docs = [
     description: "GitHub Pages、Cloudflare Pages、SEO 与子路径。",
   },
   {
+    slug: "updating",
+    title: "升级与保留内容",
+    group: "发布",
+    source: "docs/UPDATING.md",
+    description: "更新主题、合并资源与分离自己的配置和 Markdown。",
+  },
+  {
     slug: "dependencies",
     title: "依赖与许可",
     group: "发布",

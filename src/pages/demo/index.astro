@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import ColorLab from "../../components/ColorLab.astro";
 import Showcase from "../../components/Showcase.astro";
 import Icon from "../../components/Icon.astro";
 import { snapshot } from "../../lib/content.mjs";
@@ -8,13 +9,16 @@ import { settings, withBase } from "../../../website.config.mjs";
 
 <Base
   title="演示"
-  description="真实查看 Nekomi 的 Default、Fresh、Minimal 预设，切换桌面、手机和明暗截图。"
+  description="三种设计预设，自由定义你的配色。查看真实主题截图，使用同源隔离的 MDUI 配色实时预览。"
 >
   <div class="wrap">
     <header class="page-heading">
       <span class="eyebrow">NEKOMI / 实际模样</span>
-      <h1>选一种，你喜欢的模样。</h1>
-      <p>同一套布局，三种不同的气质。切换预设、设备和明暗，看看实际效果。</p>
+      <h1>设计预设之外，还有你的颜色。</h1>
+      <p>
+        Default、Fresh、Minimal
+        提供不同的设计起点，主色与辅助色都可以自由配置。先看看真实截图，再试一试自己的配色。
+      </p>
       {settings.demoUrl ? (
         <a
           class="button filled"
@@ -28,24 +32,71 @@ import { settings, withBase } from "../../../website.config.mjs";
         <p class="subtle-note">目前提供真实截图展示，在线 Demo 尚未配置。</p>
       )}
     </header>
-    <Showcase />
-    <div class="preset-descriptions">
-      <article>
-        <i class="preset-dot purple"></i>
-        <h2>Default</h2>
-        <p>柔和的 Nekomi 紫色与原有形状，保留轻松的个人站气质。</p>
-      </article>
-      <article>
-        <i class="preset-dot green"></i>
-        <h2>Fresh</h2>
-        <p>柔和青绿与辅助色，配合相同的内容结构，让页面更清新。</p>
-      </article>
-      <article>
-        <i class="preset-dot neutral"></i>
-        <h2>Minimal</h2>
-        <p>降低首篇染色，收敛形状与标题字体，让文字更靠前。</p>
-      </article>
-    </div>
+    <nav class="demo-jump-links" aria-label="演示区域">
+      <a href="#official-presets">查看官方设计预设</a>
+      <a href="#custom-colors">试用自定义配色 ↓</a>
+    </nav>
+    <section
+      id="official-presets"
+      class="section"
+      aria-labelledby="presets-title"
+    >
+      <header class="demo-block-heading">
+        <h2 id="presets-title">官方设计预设</h2>
+        <p>
+          以下是主题实际构建的截图。预设同时影响默认配色、圆角或字体等设计参数；显式设置
+          color / secondary 后，三种预设都能使用自己的颜色。
+        </p>
+      </header>
+      <Showcase />
+      <div class="preset-descriptions">
+        <article>
+          <i class="preset-dot purple"></i>
+          <h3>Default</h3>
+          <p>
+            默认以 Nekomi
+            紫色为起点，保留原有形状与标题风格。主色和辅助色均可覆盖。
+          </p>
+        </article>
+        <article>
+          <i class="preset-dot green"></i>
+          <h3>Fresh</h3>
+          <p>
+            默认使用柔和青绿与辅助色，卡片圆角为
+            24px。自定义配色时仍可保留这套形状。
+          </p>
+        </article>
+        <article>
+          <i class="preset-dot neutral"></i>
+          <h3>Minimal</h3>
+          <p>
+            降低首篇染色，采用 12px 卡片圆角与简洁标题字体。Minimal
+            同样支持自定义主色。
+          </p>
+        </article>
+      </div>
+
+      <p class="source-note">
+        截图来自 Nekomi 主题仓库的实际构建。
+        <a
+          href={`${snapshot.repository}/blob/${snapshot.commit}/screenshots/P30.md`}
+        >
+          首页截图来源
+        </a>{" "}
+        ·{" "}
+        <a
+          href={`${snapshot.repository}/blob/${snapshot.commit}/screenshots/P31.md`}
+        >
+          阅读截图来源
+        </a>
+        。同步提交{" "}
+        <a href={`${snapshot.repository}/commit/${snapshot.commit}`}>
+          {snapshot.commit.slice(0, 7)}
+        </a>
+        。
+      </p>
+    </section>
+    <ColorLab />
     <section class="section">
       <div class="section-heading">
         <div>
@@ -86,21 +137,5 @@ import { settings, withBase } from "../../../website.config.mjs";
         ))}
       </div>
     </section>
-    <p class="source-note">
-      截图来自主题仓库{" "}
-      <a
-        href={`${snapshot.repository}/blob/${snapshot.commit}/screenshots/P30.md`}
-      >
-        P3.0
-      </a>{" "}
-      /{" "}
-      <a
-        href={`${snapshot.repository}/blob/${snapshot.commit}/screenshots/P31.md`}
-      >
-        P3.1
-      </a>
-      ；为当时生产构建的真实记录，不模拟在线博客。主题提交：
-      {snapshot.commit.slice(0, 7)}。
-    </p>
   </div>
 </Base>

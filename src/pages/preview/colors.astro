@@ -1,0 +1,87 @@
+---
+import "mdui/mdui.css";
+import "../../styles/color-preview.css";
+import { withBase } from "../../../website.config.mjs";
+---
+
+<!doctype html>
+<html lang="zh-CN" class="mdui-theme-auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nekomi 配色示意</title>
+    <meta name="description" content="Nekomi 自定义配色的独立示意预览。" />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="icon" type="image/svg+xml" href={withBase("nekomi-icon.svg")} />
+  </head>
+  <body>
+    <main class="palette-preview" id="palette-preview">
+      <header class="preview-identity">
+        <div class="preview-avatar" aria-hidden="true">
+          山
+        </div>
+        <div>
+          <h1>山间笔记</h1>
+          <p>记录技术，也记录日常。</p>
+        </div>
+        <span class="preview-mode" data-preview-mode>
+          跟随系统
+        </span>
+      </header>
+      <div class="preview-navigation" aria-label="预览内容类型">
+        <span aria-current="page">全部文章</span>
+        <span>分类</span>
+        <span>归档</span>
+      </div>
+      <article class="preview-post preview-latest">
+        <div class="preview-meta">
+          <span class="preview-category">随笔</span>
+          <span>示例内容</span>
+        </div>
+        <h2>把日常写成喜欢的样子</h2>
+        <p>从一份配置和一篇 Markdown 开始，给想法留一点安静的空间。</p>
+        <div class="preview-post-bottom">
+          <span class="preview-tag">生活</span>
+          <mdui-button variant="text" data-preview-read>
+            展开正文片段
+          </mdui-button>
+        </div>
+        <p data-preview-excerpt hidden>
+          一段舒适的文字，不只需要漂亮的颜色，也需要清楚的层级和适当的留白。
+        </p>
+      </article>
+      <article class="preview-post">
+        <div class="preview-meta">
+          <span class="preview-category secondary">笔记</span>
+          <span>示例内容</span>
+        </div>
+        <h2>为下一次灵感，留一页空白</h2>
+        <p>标题、正文、标签与按钮使用同一套 Material 语义色。</p>
+        <div class="preview-post-bottom">
+          <span class="preview-tag">Markdown</span>
+          <mdui-button variant="tonal" data-preview-note aria-expanded="false">
+            查看配色笔记
+          </mdui-button>
+        </div>
+      </article>
+      <aside class="preview-note" data-preview-note-content hidden>
+        <strong>配色笔记</strong>
+        <p>
+          主色控制强调与容器色。辅助色是经 MDUI 协调后的色组，不直接把输入 HEX
+          同时涂在浅深背景上。
+        </p>
+      </aside>
+      <footer class="preview-roles" aria-label="色板角色示例">
+        <span class="role-primary">Primary</span>
+        <span class="role-secondary">Secondary</span>
+        <span class="role-surface">Surface</span>
+      </footer>
+    </main>
+    <noscript>
+      <p>实时配色需启用 JavaScript。</p>
+    </noscript>
+    <script>
+      import "../../scripts/color-preview.ts";
+    </script>
+  </body>
+</html>

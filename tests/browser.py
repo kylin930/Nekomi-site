@@ -14,7 +14,7 @@ async def main():
  async with async_playwright() as p:
   b=await p.chromium.launch(executable_path=os.environ.get('BROWSER_PATH','/usr/bin/chromium'),args=['--no-sandbox'])
   context=await b.new_context(viewport={'width':1440,'height':1000},permissions=['clipboard-read','clipboard-write'])
-  page=await context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
+  page=await context.new_page();page.on('pageerror',lambda e:errors.append({'message':str(e),'stack':e.stack,'url':page.url}))
   routes=['','features/','demo/','docs/','docs/getting-started/','docs/configuration/','docs/markdown/','docs/comments/','changelog/','faq/']
   for width,height in [(1440,1000),(768,1024),(390,844),(320,700)]:
    await page.set_viewport_size({'width':width,'height':height})
@@ -94,6 +94,9 @@ async def main():
   check(await static.locator('.prose').inner_text()!='','docs readable without JS')
   await static.goto(URL+'faq/');await static.locator('.faq-list summary').first.click()
   check(await static.locator('.faq-list details').first.evaluate('(d)=>d.open'),'FAQ usable without JS')
+  if errors:
+   (OUT/'browser-failure.json').write_text(json.dumps({'pageErrors':errors},ensure_ascii=False,indent=2))
+   print(json.dumps({'pageErrors':errors},ensure_ascii=False))
   check(not errors,'no browser page errors')
   result={'passed':len(checks),'checks':checks,'pageErrors':errors,'url':URL}
   (OUT/'browser-results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps({'passed':len(checks),'pageErrors':errors,'url':URL}))

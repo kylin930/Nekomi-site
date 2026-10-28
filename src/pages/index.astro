@@ -3,6 +3,8 @@ import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
 import Showcase from "../components/Showcase.astro";
 import { settings, withBase } from "../../website.config.mjs";
+import "../styles/color-lab.css";
+import { colorChoices } from "../lib/palette.mjs";
 import { snapshot } from "../lib/content.mjs";
 ---
 
@@ -127,11 +129,20 @@ import { snapshot } from "../lib/content.mjs";
           也是你的个人站。
         </h2>
         <p>
-          三种预设只是起点。配色、壁纸、字体、导航与侧栏，都可以从同一份配置里慢慢调整。
+          设计预设决定风格，不限制颜色。用任意六位 HEX
+          设置主色，还能独立指定辅助色；壁纸、字体、导航与侧栏也可按需调整。
         </p>
-        <a class="text-link" href={withBase("docs/configuration-guide/")}>
-          认识站点配置 <Icon name="arrow" />
-        </a>
+        <div class="personal-links">
+          <a class="text-link" href={withBase("demo/#custom-colors")}>
+            试试自己的配色 <Icon name="arrow" />
+          </a>
+          <a
+            class="text-link"
+            href={withBase("docs/configuration-guide/#主题色与预设")}
+          >
+            主题色配置说明
+          </a>
+        </div>
       </div>
       <div class="config-sample">
         <div class="code-title">
@@ -140,21 +151,28 @@ import { snapshot } from "../lib/content.mjs";
         </div>
         <pre><code><span class="muted">{`{`}</span>
   "appearance": {`{`}
-    "preset": "fresh",
-    "color": "#427f79",
+    "preset": "default",
+    "color": "#E69DB3",
+    "secondary": "#8C9AC5",
     "mode": "auto"
   {`}`}
 <span class="muted">{`}`}</span></code></pre>
-        <div class="swatches">
-          <span class="swatch purple"></span>
-          <span class="swatch green"></span>
-          <span class="swatch pink"></span>
-          <span class="swatch blue"></span>
-          <p>
-            主色交给你，
-            <br />
-            明暗色板交给 MDUI。
-          </p>
+        <div class="swatches home-colors">
+          {colorChoices.map((c) => (
+            <a
+              class="swatch"
+              style={`background:${c.color}`}
+              href={
+                withBase("demo/") +
+                "?color=" +
+                encodeURIComponent(c.color) +
+                "#custom-colors"
+              }
+              aria-label={`试用自定义主色：${c.name} ${c.color}`}
+              title={`${c.name} ${c.color}`}
+            ></a>
+          ))}
+          <p>这些都是自定义主色示例。点击一个颜色，进入实时预览。</p>
         </div>
       </div>
     </section>

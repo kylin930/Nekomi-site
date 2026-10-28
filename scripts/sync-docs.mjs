@@ -11,6 +11,8 @@ import {
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { website } from "../website.config.mjs";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import { remarkQuickStart } from "../src/lib/quick-start.mjs";
 import { docs } from "../src/data/docs.mjs";
 // Explicit, reviewable synchronization. Builds use this committed snapshot offline.
 const root = resolve(import.meta.dirname, "..");
@@ -50,6 +52,12 @@ try {
     ...new Set([...docs.map((x) => x.source), "CHANGELOG.md", "LICENSE"]),
   ])
     snapshot[file] = readFileSync(join(source, file), "utf8");
+  // Reject a renamed/missing installation section before replacing any saved snapshot.
+  const readmeProcessor = await createMarkdownProcessor({
+    syntaxHighlight: false,
+    remarkPlugins: [remarkQuickStart],
+  });
+  await readmeProcessor.render(snapshot["README.md"]);
   // Only contemporary, wallpaper-free interface screenshots with documented provenance.
   const assets = readdirSync(join(source, "screenshots")).filter(
     (x) =>

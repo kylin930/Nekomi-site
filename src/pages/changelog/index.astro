@@ -1,16 +1,17 @@
 ---
 import Base from "../../layouts/Base.astro";
+import "../../styles/color-lab.css";
 import { snapshot, renderSource, sourceLink } from "../../lib/content.mjs";
 import { settings } from "../../../website.config.mjs";
 const { html } = await renderSource("CHANGELOG.md");
 const official = (
-  snapshot.releases as { prerelease: boolean; tag: string }[]
+  snapshot.releases as { prerelease: boolean; tag: string; url: string }[]
 ).filter((r) => !r.prerelease);
 ---
 
 <Base
   title="更新日志"
-  description="来自 Nekomi 主题仓库的真实变更记录，区分代码版本、Git Tag 与正式 GitHub Release。"
+  description="Nekomi 主题的真实变化，直接同步上游更新日志。"
 >
   <div class="wrap narrow">
     <header class="page-heading">
@@ -18,33 +19,44 @@ const official = (
       <h1>一点点，变得更顺手。</h1>
       <p>这里记录主题的真实变化，内容直接来自上游 CHANGELOG。</p>
     </header>
-    <div class="release-status">
-      <div>
-        <span>源码 package.json</span>
-        <strong>{snapshot.version}</strong>
-      </div>
-      <div>
-        <span>Git Tag</span>
-        <strong>
-          {snapshot.tags.length ? snapshot.tags.join("、") : "尚无 Tag"}
-        </strong>
-      </div>
-      <div>
-        <span>正式 GitHub Release</span>
-        <strong>{official.length ? official[0].tag : "尚未发布"}</strong>
-      </div>
-    </div>
-    <p class="source-note">
-      查询时间 {snapshot.checkedAt.slice(0, 10)} · 提交{" "}
-      <a href={`${settings.github}/commit/${snapshot.commit}`}>
-        {snapshot.commit.slice(0, 7)}
+    <p class="release-notice">
+      {official.length ? (
+        <>
+          <strong>
+            正式 Release：<a href={official[0].url}>{official[0].tag} ↗</a>
+          </strong>
+        </>
+      ) : (
+        <>
+          <strong>尚无正式 GitHub Release。</strong> 下方为 main
+          分支的实际变更记录。
+        </>
+      )}{" "}
+      <a class="text-link" href={`${settings.github}/releases`}>
+        查看最新发布状态 ↗
       </a>
-      。代码中的版本号不等于已发布的 Release。
-      <a href={`${settings.github}/releases`}>查看 GitHub 实时状态 ↗</a>
     </p>
     <div class="prose changelog-prose" set:html={html} />
-    <p class="source-note">
-      <a href={sourceLink("CHANGELOG.md")}>上游 CHANGELOG 原文 ↗</a>
-    </p>
+    <details class="changelog-meta">
+      <summary>版本与同步信息</summary>
+      <dl>
+        <dt>源码版本（package.json）</dt>
+        <dd>{snapshot.version}，不代表正式 Release</dd>
+        <dt>Git Tag</dt>
+        <dd>{snapshot.tags.length ? snapshot.tags.join("、") : "尚无 Tag"}</dd>
+        <dt>同步查询时间</dt>
+        <dd>{snapshot.checkedAt.slice(0, 10)}</dd>
+        <dt>源提交</dt>
+        <dd>
+          <a href={`${snapshot.repository}/commit/${snapshot.commit}`}>
+            {snapshot.commit.slice(0, 7)}
+          </a>
+        </dd>
+        <dt>唯一维护来源</dt>
+        <dd>
+          <a href={sourceLink("CHANGELOG.md")}>上游 CHANGELOG ↗</a>
+        </dd>
+      </dl>
+    </details>
   </div>
 </Base>

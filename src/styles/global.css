@@ -816,7 +816,7 @@ kbd {
   border-left: 1px solid var(--line);
   padding: 0 20px;
 }
-.preset-descriptions h2 {
+.preset-descriptions h3 {
   font-size: 19px;
   display: inline;
   margin-left: 10px;
@@ -2126,4 +2126,9 @@ html[data-theme="dark"] .astro-code span {
   ::view-transition-new(*) {
     animation: none !important;
   }
+}
+
+.heading-alias {
+  display: block;
+  scroll-margin-top: 100px;
 }

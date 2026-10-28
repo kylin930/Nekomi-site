@@ -32,7 +32,7 @@ export const faqs = [
   [
     "如何升级主题并保留个人配置？",
     "先备份配置、文章、独立页面、图片、public 自用资源和 src/custom 适配器，阅读 CHANGELOG。保留上游历史的克隆 / Fork 可审阅后合并 upstream；Template 仓库历史独立，建议在新目录引入新版主题并迁回自己的输入。不要用旧 public 整体覆盖新版 Worker。也可用 NEKOMI_CONFIG、NEKOMI_CONTENT_DIR 与 NEKOMI_PAGES_DIR 分离个人数据。",
-    "getting-started",
+    "updating",
   ],
   [
     "代码版本 1.0.0 就是正式 Release 吗？",

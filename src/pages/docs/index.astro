@@ -1,4 +1,5 @@
 ---
+import "../../styles/color-lab.css";
 import Base from "../../layouts/Base.astro";
 import Icon from "../../components/Icon.astro";
 import { docs, snapshot } from "../../lib/content.mjs";
@@ -31,6 +32,14 @@ import { withBase } from "../../../website.config.mjs";
       </div>
       <Icon name="arrow" size={30} />
     </a>
+    <nav class="doc-shortcuts" aria-label="常用配置入口">
+      <a href={withBase("docs/configuration-guide/")}>配置站点 →</a>
+      <a href={withBase("docs/configuration-guide/#主题色与预设")}>
+        修改主题色 →
+      </a>
+      <a href={withBase("demo/#custom-colors")}>先试配色 →</a>
+      <a href={withBase("docs/publishing/")}>部署博客 →</a>
+    </nav>
     <div class="docs-groups">
       {[...new Set(docs.map((d) => d.group))].map((group, i) => (
         <section>

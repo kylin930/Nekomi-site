@@ -1,0 +1,195 @@
+---
+import { withBase } from "../../website.config.mjs";
+import {
+  colorChoices,
+  defaultPalette,
+  paletteConfig,
+} from "../lib/palette.mjs";
+import Icon from "./Icon.astro";
+import "../styles/color-lab.css";
+---
+
+<section
+  class="color-lab section"
+  id="custom-colors"
+  aria-labelledby="color-lab-title"
+  data-color-lab
+>
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">自定义配色 / 实时预览</span>
+      <h2 id="color-lab-title">三种设计预设，自由定义你的配色。</h2>
+      <p>
+        主色不必停留在预设里。试一试自己的 HEX 颜色，让 MDUI
+        生成完整的明暗色板。
+      </p>
+    </div>
+    <a
+      class="text-link"
+      href={withBase("docs/configuration-guide/#主题色与预设")}
+    >
+      配色配置说明 <Icon name="arrow" />
+    </a>
+  </div>
+  <div class="lab-grid">
+    <form class="lab-controls" id="lab-color-controls" novalidate>
+      <fieldset data-lab-fields disabled>
+        <legend class="sr-only">自定义 Nekomi 配色</legend>
+        <div class="color-field">
+          <label for="lab-primary">HEX 主色</label>
+          <div class="color-input-pair">
+            <input
+              type="color"
+              id="lab-primary-picker"
+              aria-label="用颜色选择器设置主色"
+              value={defaultPalette.color}
+            />
+            <input
+              type="text"
+              id="lab-primary"
+              value={defaultPalette.color}
+              maxlength="32"
+              pattern="#[0-9A-Fa-f]{6}"
+              aria-describedby="lab-hex-help lab-validation"
+              spellcheck="false"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <p id="lab-hex-help" class="field-help">
+          使用 # 加六位 HEX，例如 #E69DB3。
+        </p>
+        <fieldset class="quick-colors">
+          <legend>常用主色</legend>
+          <div>
+            {colorChoices.map((c) => (
+              <button
+                type="button"
+                data-lab-color={c.color}
+                class="color-choice"
+                aria-label={`${c.name} ${c.color}`}
+                aria-pressed={c.color === defaultPalette.color}
+                style={`--choice-color:${c.color}`}
+              >
+                <span aria-hidden="true"></span>
+                {c.name}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+        <label class="secondary-toggle">
+          <input
+            type="checkbox"
+            id="lab-use-secondary"
+            aria-controls="lab-secondary-fields"
+            aria-expanded="false"
+          />
+          自定义辅助色 <span>可选</span>
+        </label>
+        <div id="lab-secondary-fields" data-secondary-fields hidden>
+          <div class="color-input-pair">
+            <input
+              type="color"
+              id="lab-secondary-picker"
+              aria-label="用颜色选择器设置辅助色"
+              value="#8C9AC5"
+              disabled
+            />
+            <input
+              type="text"
+              id="lab-secondary"
+              aria-label="辅助色 HEX"
+              value="#8C9AC5"
+              maxlength="32"
+              pattern="#[0-9A-Fa-f]{6}"
+              aria-describedby="lab-secondary-help lab-validation"
+              spellcheck="false"
+              autocomplete="off"
+              disabled
+            />
+          </div>
+          <p class="field-help" id="lab-secondary-help">
+            关闭时由主色推导；开启后按主题规则生成协调的辅助色组。
+          </p>
+        </div>
+        <label class="lab-mode" for="lab-mode">
+          预览与配置模式
+          <select id="lab-mode">
+            <option value="auto">跟随系统 auto</option>
+            <option value="light">浅色 light</option>
+            <option value="dark">深色 dark</option>
+          </select>
+        </label>
+        <p
+          class="lab-validation"
+          id="lab-validation"
+          role="status"
+          aria-live="polite"
+        ></p>
+        <button type="button" class="text-link lab-reset" data-lab-reset>
+          恢复默认配色 <Icon name="arrow" size={16} />
+        </button>
+      </fieldset>
+      <a class="text-link lab-mobile-jump" href="#lab-preview-pane">
+        查看当前配色 ↓
+      </a>
+    </form>
+    <div class="lab-preview" id="lab-preview-pane">
+      <div class="lab-preview-label">
+        <span>博客 UI 配色示意</span>
+        <a class="lab-mobile-jump text-link" href="#lab-color-controls">
+          调整配色 ↑
+        </a>
+        <span>独立预览 · 不改变官网配色</span>
+      </div>
+      <iframe
+        src={withBase("preview/colors/")}
+        title="Nekomi 自定义主色和辅助色实时预览"
+        data-palette-frame
+        loading="lazy"
+        height="540"
+      ></iframe>
+      <p class="field-help">
+        这是用于观察颜色与容器层级的交互示意，不是完整主题截图。布局、内容与站点功能请参看上方真实截图。
+      </p>
+      <p data-lab-ready role="status" class="field-help">
+        正在准备实时预览…
+      </p>
+    </div>
+  </div>
+  <div class="lab-config">
+    <div>
+      <h3>把喜欢的颜色，带回自己的博客。</h3>
+      <p>
+        将下面的 <code>appearance</code> 合并进已有的{" "}
+        <code>site.config.json</code>，保留其他配置，再重新构建。
+      </p>
+      <p>
+        这里保留 <code>preset: "default"</code>
+        。预设还决定圆角、字体等风格；切换颜色不会自动切换整套预设。若想保留已有的
+        Fresh / Minimal，请保留自己的 preset
+        值。关闭辅助色时，空字符串用于清除已有覆盖。
+      </p>
+      <button type="button" class="button filled" data-copy-palette disabled>
+        复制配置 JSON <Icon name="copy" size={18} />
+      </button>
+      <p role="status" data-lab-copy-status class="field-help"></p>
+    </div>
+    <pre
+      tabindex="0"
+      aria-label="可合并的 Nekomi appearance 配置"
+    ><code data-palette-json>{paletteConfig(defaultPalette)}</code></pre>
+  </div>
+  <noscript>
+    <p class="callout">
+      实时配色需要 JavaScript；上方保留默认配置示例。你仍可阅读
+      <a href={withBase("docs/configuration-guide/#主题色与预设")}>
+        主题色与预设说明
+      </a>
+      ，或浏览真实截图。
+    </p>
+  </noscript>
+</section>
+<script>
+  import "../scripts/color-lab.ts";
+</script>
