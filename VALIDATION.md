@@ -38,4 +38,18 @@ README 包含完整命令。浏览器测试需要先为静态产物运行 HTTP �
 
 ## 发布边界
 
-尚未绑定真实官网域名、创建远程官网仓库或执行线上部署。默认构建无生产 Canonical、输出 noindex 与空 Sitemap；维护者填写真实域名并重建后才启用相应元数据。在线 Demo 为可选空配置。GitHub Pages 工作流和 Cloudflare Pages 操作已提供，未声称实际托管 / DNS / HTTPS 验收完成。Safari、Firefox 和屏幕阅读器未执行专项测试；生产运行没有统计、第三方字体或外部评论 SDK。
+官网源码仓库为 `kylin930/Nekomi-site`，使用 `main` 分支。尚未绑定真实官网域名或执行线上部署。默认构建无生产 Canonical、输出 noindex 与空 Sitemap；维护者填写真实域名并重建后才启用相应元数据。在线 Demo 为可选空配置。GitHub Pages 工作流和 Cloudflare Pages 操作已提供，未声称实际托管 / DNS / HTTPS 验收完成。Safari、Firefox 和屏幕阅读器未执行专项测试；生产运行没有统计、第三方字体或外部评论 SDK。
+
+## 品牌图标更新验收
+
+维护者提供的 `nekomi-icon.svg` 原样保存于 public/，SHA-256 为 `ff1f48cd17f0812baa7ae3651ab25b05e0c4ededd966c9625442ab5c99a87ef3`，与上传文件一致。替换页头、页脚、首页标题旁标识及 favicon；删除临时 N 字标识、旧 favicon 和未使用的花朵图形，更新来源说明。真实主题截图保留原图。
+
+本次实际检查：
+
+- Astro Check：0 错误、0 警告、0 提示；静态构建成功。
+- 根路径和 `/Nekomi-site/` 子路径各检查 23 个页面、1,225 处链接 / 资源引用，无错误。
+- 现有 Chromium 功能回归 211 项通过，无页面脚本异常。
+- 新图标在根路径 / 子路径的桌面浅深、390px 手机浅深及 320px 窄屏共 10 组浏览器检查通过：三个品牌图片加载正常、无横向溢出、favicon 返回原始 SVG、没有额外底框或变色。
+- 实际查看了桌面浅色与手机深色截图，图标比例和留白正常。
+
+图标截图与检查记录保存在忽略的 `test-results/brand/`，不将本地生成的截图、依赖或构建目录提交进源码仓库。

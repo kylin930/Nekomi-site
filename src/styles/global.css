@@ -273,11 +273,13 @@ kbd {
 .brand-mark {
   width: 38px;
   height: 38px;
-  border-radius: 13px;
-  background: var(--primary-container);
-  color: var(--primary);
+  flex-shrink: 0;
   display: grid;
   place-items: center;
+}
+.brand-mark img {
+  width: 100%;
+  height: 100%;
 }
 .brand-name {
   font-size: 23px;
@@ -384,10 +386,10 @@ kbd {
   align-items: center;
   gap: 28px;
 }
-.hero-flower {
-  color: #a994c4;
-  transform: rotate(-12deg);
-  display: inline-flex;
+.hero-icon {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
 }
 .hero h2 {
   font-size: clamp(30px, 3.5vw, 43px);
@@ -749,10 +751,6 @@ kbd {
 .site-footer .brand-mark {
   width: 30px;
   height: 30px;
-  border-radius: 10px;
-}
-.site-footer .brand-mark svg {
-  width: 25px;
 }
 .site-footer .brand-name {
   font-size: 20px;
@@ -1691,10 +1689,6 @@ html[data-theme="dark"] .astro-code span {
   .brand-mark {
     width: 32px;
     height: 32px;
-    border-radius: 11px;
-  }
-  .brand-mark svg {
-    width: 28px;
   }
   .hero {
     padding: 36px 0 30px;
@@ -1706,8 +1700,9 @@ html[data-theme="dark"] .astro-code span {
     margin-top: 22px;
     gap: 20px;
   }
-  .hero-flower svg {
-    width: 43px;
+  .hero-icon {
+    width: 48px;
+    height: 48px;
   }
   .hero h2 {
     font-size: 29px;

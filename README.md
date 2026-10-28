@@ -2,11 +2,15 @@
 
 Nekomi 静态博客主题的独立官网 v1。Astro 7 + MDUI 2.1.5 + 原生 CSS / TypeScript，构建为纯静态 HTML，不依赖 React、Vue、数据库或常驻后端。主题源码仅作为只读审计来源，未修改其业务逻辑。
 
+官网源码仓库：[kylin930/Nekomi-site](https://github.com/kylin930/Nekomi-site)。主题仓库仍为 [kylin930/Nekomi](https://github.com/kylin930/Nekomi)。
+
 ## 本地开发
 
 推荐 Node.js 24 LTS（最低 22.23.4），使用仓库锁文件：
 
 ```sh
+git clone https://github.com/kylin930/Nekomi-site.git
+cd Nekomi-site
 npm ci
 npm run dev
 npm run check
@@ -34,9 +38,9 @@ npm run preview
 
 ### GitHub Pages
 
-1. 将本目录作为独立仓库（建议 `Nekomi-website`）上传，不需要主题仓库的源码。
+1. 使用本官网仓库或 Fork，不需要将主题源码放入官网项目。
 2. Settings → Pages → Source 选择 GitHub Actions。
-3. Actions Variables 设置 `SITE_URL=https://你的用户名.github.io`、`SITE_BASE=/Nekomi-website/`；用户名主页仓库或自定义域名的根路径使用 `/`。可选 `DEMO_URL`。
+3. Actions Variables 设置 `SITE_URL=https://你的用户名.github.io`、`SITE_BASE=/Nekomi-site/`；用户名主页仓库或自定义域名的根路径使用 `/`。可选 `DEMO_URL`。
 4. 手动运行 Deploy website 工作流。工作流检查、测试、构建并上传静态产物，默认不会随推送自动发布。
 5. 自定义域名在平台配置 DNS / HTTPS，并按需要创建 public/CNAME，再设置对应 SITE_URL / SITE_BASE。
 
@@ -49,8 +53,8 @@ npm run preview
 ```sh
 SITE_URL=https://example.org SITE_BASE=/ npm run build
 python3 tests/check-links.py dist /
-SITE_URL=https://your-name.github.io SITE_BASE=/Nekomi-website/ npm run build
-python3 tests/check-links.py dist /Nekomi-website/
+SITE_URL=https://your-name.github.io SITE_BASE=/Nekomi-site/ npm run build
+python3 tests/check-links.py dist /Nekomi-site/
 ```
 
 `example.org` 仅为配置示例，不代表已上线域名。子路径下生成的 robots.txt 不能替代域名根目录的 robots；有根站管理权限时合并 Sitemap 声明。404.html 已生成；需托管服务保留真实 404 状态，目录 URL 解析到 index.html。
@@ -88,7 +92,8 @@ NEKOMI_SOURCE=/path/to/Nekomi npm run sync:docs
 
 - `Base.astro`：导航、主题、搜索对话框、SEO、页脚、返回顶部。
 - `Showcase.astro`：原图展示框与截图切换；手机首访默认手机图，之后可自由切换。
-- `Logo.astro` / `Icon.astro`：原创官网临时标识与本地 SVG 图标。
+- `Logo.astro`：页头与页脚品牌入口，和首页标识、favicon 共用维护者提供的 `public/nekomi-icon.svg` 原图；通过统一路径函数适配子路径部署。
+- `Icon.astro`：本地线性 SVG 操作图标，不承担品牌标识。
 - `content.mjs`：构建期 Markdown 渲染、同源标题锚点、相对链接转换。
 - `site.ts`：三种主题模式、本地记忆、搜索 / 失败重试 / 键盘选择、复制与移动菜单。
 - `global.css`：MD3 语义色、响应式排版、深色、焦点和减少动态支持。
@@ -110,6 +115,6 @@ BROWSER_PATH=/usr/bin/chromium python3 tests/browser.py http://127.0.0.1:4321/
 
 ## 发布前由维护者提供
 
-真实官网源站 / 子路径、可选在线主题 Demo 地址，以及 GitHub 仓库与托管绑定。当前源码可独立构建；没有创建远程仓库或执行线上部署。Chrome 浏览器测试不能替代 Safari / Firefox 与真实托管验收。
+真实官网源站 / 子路径、可选在线主题 Demo 地址，以及 GitHub 仓库与托管绑定。当前源码可独立构建，并提交到官网仓库的 `main` 分支；尚未执行线上部署。Chrome 浏览器测试不能替代 Safari / Firefox 与真实托管验收。
 
 许可和素材出处见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) 和 LICENSE。
